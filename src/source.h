@@ -9,7 +9,7 @@
 #define LARGEUR 1920
 #define HAUTEUR 1080
 
-void clean_resources(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *texture_menu, SDL_Texture *texture_bouton_quitter);
+void clean_resources(SDL_Window *w, SDL_Renderer *r, SDL_Texture *t);
 int play(SDL_Renderer *renderer, SDL_Rect taille_renderer);
 
 #endif

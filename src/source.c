@@ -1,18 +1,15 @@
 #include "source.h"
 
-void clean_resources(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *texture_menu, SDL_Texture *texture_bouton_quitter)
+void clean_resources(SDL_Window *w, SDL_Renderer *r, SDL_Texture *t)
 {
-    if(texture_bouton_quitter != NULL)
-        SDL_DestroyTexture(texture_bouton_quitter);
-        
-    if(texture_menu != NULL)
-        SDL_DestroyTexture(texture_menu);
+    if(t != NULL)
+        SDL_DestroyTexture(t);
 
-    if(renderer != NULL)
-        SDL_DestroyRenderer(renderer);
+    if(r != NULL)
+        SDL_DestroyRenderer(r);
     
-    if(window != NULL)
-        SDL_DestroyWindow(window);
+    if(w != NULL)
+        SDL_DestroyWindow(w);
 
     SDL_Quit();
 }
@@ -28,20 +25,28 @@ int play(SDL_Renderer *renderer, SDL_Rect taille_renderer)
 
     SDL_RenderClear(renderer);
 
-    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, LARGEUR, HAUTEUR);
-    if(texture == NULL)
+    blanc = SDL_CreateRGBSurface(0, LARGEUR, HAUTEUR, 32, 0, 0, 0, 0);
+
+    if(SDL_FillRect(blanc, NULL, SDL_MapRGB(blanc->format, 255, 255, 255)) != 0)
     {
+        printf("SDL_FillRect\n");
         SDL_Log("ERREUr > %s\n", SDL_GetError());
         return 1;
     }
 
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-    SDL_SetRenderTarget(renderer, texture);
-    SDL_RenderFillRect(renderer, NULL);
-    SDL_SetRenderTarget(renderer, NULL);
+    texture = SDL_CreateTextureFromSurface(renderer, blanc);
+    SDL_FreeSurface(blanc);
+    if(texture == NULL)
+    {
+        printf("SDL_CreateTextureFromSurface\n");
+        SDL_Log("ERREUr > %s\n", SDL_GetError());
+        return 1;
+    }
+
 
     if(SDL_QueryTexture(texture, NULL, NULL, &taille_renderer.w, &taille_renderer.h) != 0)
     {
+        printf("SDL_QueryTexture\n");
         SDL_Log("ERREUR > %s\n",SDL_GetError());
         SDL_DestroyTexture(texture);
         return 1;
@@ -51,6 +56,7 @@ int play(SDL_Renderer *renderer, SDL_Rect taille_renderer)
     {
         if(SDL_RenderCopy(renderer, texture, NULL, &taille_renderer) != 0)
         {
+            printf("SDL_RenderCopy\n");
             SDL_Log("ERREUR > %s\n",SDL_GetError());
             SDL_DestroyTexture(texture);
             return 1;
