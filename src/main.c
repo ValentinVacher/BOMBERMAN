@@ -4,9 +4,12 @@ int main(int argc, char *argv[])
 {
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
-    SDL_Texture *texture = NULL;
+    SDL_Texture *texture_menu = NULL;
+    SDL_Texture *texture_bouton_quitter = NULL;
     SDL_Surface *image_menu = NULL;
+    SDL_Surface *image_bouton_quitter = NULL;
     SDL_Rect positionMenu = {0, 0, LARGEUR, HAUTEUR};
+    SDL_Rect position_bouton_quitter = {1200, 600, 500, 100};
 
     if(SDL_Init(SDL_INIT_VIDEO) != 0)
     {
@@ -18,7 +21,7 @@ int main(int argc, char *argv[])
     if(window == NULL)
     {
         SDL_Log("ERREUR > %s\n",SDL_GetError());
-        SDL_DestroyWindow(window);
+        clean_resources(window, NULL, NULL, NULL);
         exit(EXIT_FAILURE);
     }
 
@@ -26,7 +29,7 @@ int main(int argc, char *argv[])
     if(renderer == NULL)
     {
         SDL_Log("ERREUR > %s\n",SDL_GetError());
-        clean_resources(window, renderer, NULL);
+        clean_resources(window, renderer, NULL, NULL);
         exit(EXIT_FAILURE);
     }
 
@@ -34,23 +37,23 @@ int main(int argc, char *argv[])
     if(image_menu == NULL)
     {
         SDL_Log("ERREUR > %s\n",SDL_GetError());
-        clean_resources(window, renderer, NULL);
+        clean_resources(window, renderer, NULL, NULL);
         exit(EXIT_FAILURE);
     }
 
-    texture = SDL_CreateTextureFromSurface(renderer, image_menu);
+    texture_menu = SDL_CreateTextureFromSurface(renderer, image_menu);
     SDL_FreeSurface(image_menu);
-    if(texture == NULL)
+    if(texture_menu == NULL)
     {
         SDL_Log("ERREUR > %s\n",SDL_GetError());
-        clean_resources(window, renderer, texture);
+        clean_resources(window, renderer, NULL, NULL);
         exit(EXIT_FAILURE);
     }
 
-    if(SDL_QueryTexture(texture, NULL, NULL, &positionMenu.w, &positionMenu.h) != 0)
+    if(SDL_QueryTexture(texture_menu, NULL, NULL, &positionMenu.w, &positionMenu.h) != 0)
     {
         SDL_Log("ERREUR > %s\n",SDL_GetError());
-        clean_resources(window, renderer, texture);
+        clean_resources(window, renderer, texture_menu, NULL);
         exit(EXIT_FAILURE);
     }
 
@@ -61,11 +64,41 @@ int main(int argc, char *argv[])
         SDL_Event event;
 
         SDL_RenderClear(renderer);
-
-        if(SDL_RenderCopy(renderer, texture, NULL, &positionMenu) != 0)
+        image_bouton_quitter = IMG_Load("src/images/bouton_quitter.png");
+        if(image_bouton_quitter == NULL)
         {
             SDL_Log("ERREUR > %s\n",SDL_GetError());
-            clean_resources(window, renderer, texture);
+            clean_resources(window, renderer, texture_menu, NULL);
+            exit(EXIT_FAILURE);
+        }
+
+        texture_bouton_quitter = SDL_CreateTextureFromSurface(renderer, image_bouton_quitter);
+        SDL_FreeSurface(image_bouton_quitter);
+        if(texture_bouton_quitter == NULL)
+        {
+            SDL_Log("ERREUR > %s\n",SDL_GetError());
+            clean_resources(window, renderer, texture_menu, NULL);
+            exit(EXIT_FAILURE);
+        }
+
+        if(SDL_QueryTexture(texture_bouton_quitter, NULL, NULL, &position_bouton_quitter.w, &position_bouton_quitter.h) != 0)
+        {
+            SDL_Log("ERREUR > %s\n",SDL_GetError());
+            clean_resources(window, renderer, texture_menu, texture_bouton_quitter);
+            exit(EXIT_FAILURE);
+        }
+
+        if(SDL_RenderCopy(renderer, texture_menu, NULL, &positionMenu) != 0)
+        {
+            SDL_Log("ERREUR > %s\n",SDL_GetError());
+            clean_resources(window, renderer, texture_menu, texture_bouton_quitter);
+            exit(EXIT_FAILURE);
+        }
+
+        if(SDL_RenderCopy(renderer, texture_bouton_quitter, NULL, &position_bouton_quitter) != 0)
+        {
+            SDL_Log("ERREUR > %s\n",SDL_GetError());
+            clean_resources(window, renderer, texture_menu, texture_bouton_quitter);
             exit(EXIT_FAILURE);
         }
 
@@ -100,9 +133,10 @@ int main(int argc, char *argv[])
                 break;
             }
         }
+        printf("pipi\n");
     }
 
-    clean_resources(window, renderer, texture);
+    clean_resources(window, renderer, texture_menu, texture_bouton_quitter);
 
 
     return EXIT_SUCCESS;
