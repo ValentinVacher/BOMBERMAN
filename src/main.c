@@ -1,56 +1,103 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <SDL.h>
-#include <SDL_image.h>
+#include "src/source.h"
 
 int main(int argc, char *argv[])
 {
-    SDL_Surface *ecran = NULL, *menu = NULL;
+    SDL_Window *window = NULL;
+    SDL_Renderer *renderer = NULL;
+    SDL_Texture *texture = NULL;
+    SDL_Surface *menu = NULL;
+    SDL_Rect positionMenu = {0, 0, LARGEUR, HAUTEUR};
 
-    SDL_Rect positionMenu;
-    SDL_Event event;
-    int continuer = 1;
-
-    SDL_Init(SDL_INIT_VIDEO);
-
-    SDL_WM_SetIcon(IMG_Load("link.bmp"), NULL);
-    ecran = SDL_SetVideoMode(952, 442, 64, SDL_HWSURFACE | SDL_DOUBLEBUF);
-    SDL_WM_SetCaption("Zelda BOMBER", NULL);
-
-    menu = IMG_Load("menu.png");
-    positionMenu.x = 0;
-    positionMenu.y = 0;
-
-    while(continuer)
+    if(SDL_Init(SDL_INIT_VIDEO) != 0)
     {
-        SDL_WaitEvent(&event);
-        switch (event.type)
-        {
-            case SDL_QUIT :
-                continuer = 0;
-                break;
-
-            case SDL_KEYDOWN:  
-                switch (event.key.keysym.sym)
-                {
-                    case SDLK_ESCAPE:
-                        continuer = 0;
-                        break;
-                
-                    default:
-                        break;
-                }
-        
-            default :
-                break;
-        }
-        SDL_BlitSurface(menu, NULL, ecran, &positionMenu);
-        SDL_Flip(ecran);
+        SDL_Log("ERREUR > %s\n", SDL_GetError());
+        clean_resources(window, renderer, texture);
+        exit(EXIT_FAILURE);
     }
 
-    SDL_FreeSurface(ecran);
+    window = SDL_CreateWindow("BOMBERMAN", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, LARGEUR, HAUTEUR, 0);
+    if(window == NULL)
+    {
+        SDL_Log("ERREUR > %s\n",SDL_GetError());
+        clean_resources(window, renderer, texture);
+        exit(EXIT_FAILURE);
+    }
+
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+    if(renderer == NULL)
+    {
+        SDL_Log("ERREUR > %s\n",SDL_GetError());
+        clean_resources(window, renderer, texture);
+        exit(EXIT_FAILURE);
+    }
+
+    menu = IMG_Load("src/menu.jpg");
+    if(menu == NULL)
+    {
+        SDL_Log("ERREUR > %s\n",SDL_GetError());
+        clean_resources(window, renderer, texture);
+        exit(EXIT_FAILURE);
+    }
+
+    texture = SDL_CreateTextureFromSurface(renderer, menu);
     SDL_FreeSurface(menu);
-    SDL_Quit();
+    if(texture == NULL)
+    {
+        SDL_Log("ERREUR > %s\n",SDL_GetError());
+        clean_resources(window, renderer, texture);
+        exit(EXIT_FAILURE);
+    }
+
+    if(SDL_QueryTexture(texture, NULL, NULL, &positionMenu.w, &positionMenu.h) != 0)
+    {
+        SDL_Log("ERREUR > %s\n",SDL_GetError());
+        clean_resources(window, renderer, texture);
+        exit(EXIT_FAILURE);
+    }
+
+    if(SDL_RenderCopy(renderer, texture, NULL, &positionMenu) != 0)
+    {
+        SDL_Log("ERREUR > %s\n",SDL_GetError());
+        clean_resources(window, renderer, texture);
+        exit(EXIT_FAILURE);
+    }
+
+    SDL_bool programme_launched = SDL_TRUE;
+    
+    while(programme_launched)
+    {
+        SDL_Event event;
+
+        SDL_RenderPresent(renderer);
+
+        while(SDL_PollEvent(&event) == 1)
+        {
+            switch (event.type)
+            {
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym)
+                {
+                case SDLK_ESCAPE:
+                    programme_launched = SDL_FALSE;
+                    break;
+                
+                default:
+                    break;
+                }
+                break;
+            
+            case SDL_QUIT:
+                programme_launched = SDL_FALSE;
+                break;
+
+            default:
+                break;
+            }
+        }
+    }
+
+    clean_resources(window, renderer, texture);
+
 
     return EXIT_SUCCESS;
 }
