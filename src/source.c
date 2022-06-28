@@ -1,4 +1,4 @@
-#include "src/source.h"
+#include "source.h"
 
 void clean_resources(SDL_Window *w, SDL_Renderer *r, SDL_Texture *t)
 {

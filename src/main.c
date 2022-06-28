@@ -1,17 +1,16 @@
-#include "src/source.h"
+#include "source.h"
 
 int main(int argc, char *argv[])
 {
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
     SDL_Texture *texture = NULL;
-    SDL_Surface *menu = NULL;
+    SDL_Surface *image_menu = NULL;
     SDL_Rect positionMenu = {0, 0, LARGEUR, HAUTEUR};
 
     if(SDL_Init(SDL_INIT_VIDEO) != 0)
     {
         SDL_Log("ERREUR > %s\n", SDL_GetError());
-        clean_resources(window, renderer, texture);
         exit(EXIT_FAILURE);
     }
 
@@ -19,7 +18,7 @@ int main(int argc, char *argv[])
     if(window == NULL)
     {
         SDL_Log("ERREUR > %s\n",SDL_GetError());
-        clean_resources(window, renderer, texture);
+        clean_resources(window, NULL, NULL);
         exit(EXIT_FAILURE);
     }
 
@@ -27,20 +26,20 @@ int main(int argc, char *argv[])
     if(renderer == NULL)
     {
         SDL_Log("ERREUR > %s\n",SDL_GetError());
-        clean_resources(window, renderer, texture);
+        clean_resources(window, renderer, NULL);
         exit(EXIT_FAILURE);
     }
 
-    menu = IMG_Load("src/menu.jpg");
-    if(menu == NULL)
+    image_menu = IMG_Load("src/images/menu.jpg");
+    if(image_menu == NULL)
     {
         SDL_Log("ERREUR > %s\n",SDL_GetError());
-        clean_resources(window, renderer, texture);
+        clean_resources(window, renderer, NULL);
         exit(EXIT_FAILURE);
     }
 
-    texture = SDL_CreateTextureFromSurface(renderer, menu);
-    SDL_FreeSurface(menu);
+    texture = SDL_CreateTextureFromSurface(renderer, image_menu);
+    SDL_FreeSurface(image_menu);
     if(texture == NULL)
     {
         SDL_Log("ERREUR > %s\n",SDL_GetError());
