@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     if(window == NULL)
     {
         SDL_Log("ERREUR > %s\n",SDL_GetError());
-        clean_resources(window, NULL, NULL);
+        SDL_DestroyWindow(window);
         exit(EXIT_FAILURE);
     }
 
@@ -54,18 +54,20 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    if(SDL_RenderCopy(renderer, texture, NULL, &positionMenu) != 0)
-    {
-        SDL_Log("ERREUR > %s\n",SDL_GetError());
-        clean_resources(window, renderer, texture);
-        exit(EXIT_FAILURE);
-    }
-
     SDL_bool programme_launched = SDL_TRUE;
     
     while(programme_launched)
     {
         SDL_Event event;
+
+        SDL_RenderClear(renderer);
+
+        if(SDL_RenderCopy(renderer, texture, NULL, &positionMenu) != 0)
+        {
+            SDL_Log("ERREUR > %s\n",SDL_GetError());
+            clean_resources(window, renderer, texture);
+            exit(EXIT_FAILURE);
+        }
 
         SDL_RenderPresent(renderer);
 
@@ -78,6 +80,11 @@ int main(int argc, char *argv[])
                 {
                 case SDLK_ESCAPE:
                     programme_launched = SDL_FALSE;
+                    break;
+                
+                case SDLK_1:
+                    if(play(renderer, positionMenu))
+                        programme_launched = SDL_FALSE;
                     break;
                 
                 default:
