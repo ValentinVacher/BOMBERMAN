@@ -6,10 +6,35 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
 #define LARGEUR 1920
 #define HAUTEUR 1080
 
-void clean_resources(SDL_Window *w, SDL_Renderer *r, SDL_Texture *t);
-int play(SDL_Renderer *renderer, SDL_Rect taille_renderer);
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+enum
+{
+    haut,//0
+    bas,//1
+    gauche,//2
+    droite//3
+};
+
+enum
+{
+    vide,//0
+    mur,//1
+    link//2
+};
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h);
+SDL_Texture *load_image(const char path[], SDL_Renderer *renderer);
+void free_link(SDL_Texture *link[]);
+int create_link(SDL_Texture *link[], SDL_Renderer *renderer, SDL_Rect taille_link[]);
+void destroy_play(SDL_Texture *texture_arriere_plan, SDL_Texture *link_actuel, SDL_Texture *link[]);
+int play(SDL_Renderer *renderer);
 
 #endif
