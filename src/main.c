@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
     SDL_Texture *texture_menu = NULL;
     SDL_Surface *image_menu = NULL;
     SDL_bool programme_launched = SDL_TRUE;
+    unsigned int frame_limit = 0;
     int statut = EXIT_FAILURE;
 
     if(init(&window, &renderer, LARGEUR, HAUTEUR) != 0)
@@ -26,6 +27,8 @@ int main(int argc, char *argv[])
     
     while(programme_launched)
     {
+        frame_limit = SDL_GetTicks() + FPS;
+
         SDL_Event event;
 
         if(SDL_RenderCopy(renderer, texture_menu, NULL, NULL) != 0)
@@ -58,7 +61,7 @@ int main(int argc, char *argv[])
                         if(texture_menu == NULL)
                             goto quit;
                     }
-                    
+
                     break;
                 
                 default:
@@ -74,6 +77,8 @@ int main(int argc, char *argv[])
                 break;
             }
         }
+
+        limite_fps(frame_limit);
     }
 
     statut = EXIT_SUCCESS;

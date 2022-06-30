@@ -41,6 +41,21 @@ SDL_Texture *load_image(const char path[], SDL_Renderer *renderer)
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
+void limite_fps(unsigned int limit)
+{
+    unsigned int ticks = SDL_GetTicks();
+
+    if(limit < ticks)
+        return;
+    
+    else if(limit > ticks + FPS)
+        SDL_Delay(FPS);
+    else 
+        SDL_Delay(limit - ticks);
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
 void free_link(SDL_Texture *link[])
 {
     int i;
@@ -123,6 +138,7 @@ int play(SDL_Renderer *renderer)
     SDL_bool game_launched = SDL_TRUE;
     SDL_Texture *texture_arriere_plan = NULL, *link[4], *link_actuel = NULL;
     SDL_Rect taille_link_actuel, taille_link[4];
+    unsigned int frame_limit = 0;
 
     texture_arriere_plan = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, LARGEUR, HAUTEUR);
     if(texture_arriere_plan == NULL)
@@ -159,10 +175,9 @@ int play(SDL_Renderer *renderer)
         return 1;
     }
 
-    printf("%d\n%d\n%d\n%d\n",taille_link_actuel.h, taille_link_actuel.w, taille_link_actuel.x, taille_link_actuel.y);
-
     while (game_launched)
     {
+        frame_limit = SDL_GetTicks() + FPS;
         SDL_RenderClear(renderer);
 
         if(SDL_RenderCopy(renderer, texture_arriere_plan, NULL, NULL) != 0)
@@ -204,6 +219,7 @@ int play(SDL_Renderer *renderer)
                 break;
             }
         }
+        limite_fps(frame_limit);
     } 
 
     destroy_play(texture_arriere_plan, link_actuel, link);
