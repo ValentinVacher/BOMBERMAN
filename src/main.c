@@ -9,8 +9,11 @@ int main(int argc, char *argv[])
     SDL_Texture *texture_menu = NULL;
     SDL_Surface *image_menu = NULL;
     SDL_bool programme_launched = SDL_TRUE;
+    input in;
     unsigned int frame_limit = 0;
     int statut = EXIT_FAILURE;
+
+    memset(&in, SDL_FALSE, sizeof(input));
 
     if(init(&window, &renderer, LARGEUR, HAUTEUR) != 0)
         goto quit;
@@ -25,11 +28,11 @@ int main(int argc, char *argv[])
         goto quit;
     }
     
-    while(programme_launched)
+    while(!in.quit)
     {
         frame_limit = SDL_GetTicks() + FPS;
 
-        SDL_Event event;
+        //SDL_Event event;
 
         if(SDL_RenderCopy(renderer, texture_menu, NULL, NULL) != 0)
         {
@@ -39,45 +42,16 @@ int main(int argc, char *argv[])
 
         SDL_RenderPresent(renderer);
 
-        while(SDL_PollEvent(&event))
+        update_event(&in);
+
+        if(in.key[40])
         {
-            switch (event.type)
-            {
-            case SDL_KEYDOWN:
-                switch (event.key.keysym.sym)
-                {
-                case SDLK_ESCAPE:
-                    programme_launched = SDL_FALSE;
-                    break;
-                
-                case SDLK_1:
-                    SDL_DestroyTexture(texture_menu);
-                    if(play(renderer))
-                        programme_launched = SDL_FALSE;
-                    
-                    else
-                    {
-                        texture_menu = load_image("src/images/menu.jpg", renderer);
-                        if(texture_menu == NULL)
-                            goto quit;
-                    }
-
-                    break;
-                
-                default:
-                    break;
-                }
-                break;
-            
-            case SDL_QUIT:
-                programme_launched = SDL_FALSE;
-                break;
-
-            default:
-                break;
-            }
+            SDL_DestroyTexture(texture_menu);
+            play(renderer, &in);  
+            texture_menu = load_image("src/images/menu.jpg", renderer);
+            if(texture_menu == NULL)
+                goto quit;
         }
-
         limite_fps(frame_limit);
     }
 

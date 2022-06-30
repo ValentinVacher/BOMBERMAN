@@ -50,6 +50,55 @@ void limite_fps(unsigned int limit)
     
     else if(limit > ticks + FPS)
         SDL_Delay(FPS);
+        
     else 
         SDL_Delay(limit - ticks);
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+void update_event(input *in)
+{
+    SDL_Event event;
+
+    while(SDL_PollEvent(&event))
+    {
+        switch(event.type)
+        {
+            case SDL_QUIT:
+                in->quit = SDL_TRUE;
+                break;
+
+            case SDL_KEYDOWN:
+                in->key[event.key.keysym.scancode] = SDL_TRUE;
+                break;
+
+            case SDL_KEYUP:
+                in->key[event.key.keysym.scancode] = SDL_FALSE;
+                break;
+            
+            case SDL_MOUSEMOTION:
+                in->x = event.motion.x;
+                in->y = event.motion.y;
+                in->xrel = event.motion.xrel;
+                in->yrel = event.motion.yrel;
+                break;
+            
+            case SDL_MOUSEWHEEL:
+                in->xwheel = event.wheel.x;
+                in->ywheel = event.wheel.y;
+                break;
+            
+            case SDL_MOUSEBUTTONDOWN:
+                in->mouse[event.button.button] = SDL_TRUE;
+                break;
+
+            case SDL_MOUSEBUTTONUP:
+                in->mouse[event.button.button] = SDL_FALSE;
+                break;
+            
+            default:
+                break;
+        }
+    }
 }

@@ -9,7 +9,24 @@ void destroy_play(SDL_Texture *texture_arriere_plan, SDL_Texture *link_actuel, S
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-int play(SDL_Renderer *renderer)
+void deplacer_joueur(SDL_Rect *position_link, const int direction)
+{
+    if(direction == haut)
+        position_link->y--;
+
+    if(direction == bas)
+        position_link->y++;
+
+    if(direction == gauche)
+        position_link->x--;
+
+    if(direction == droite)
+        position_link->x++;
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+int play(SDL_Renderer *renderer, input *in)
 {
     SDL_Event event;
     SDL_bool game_launched = SDL_TRUE;
@@ -52,7 +69,7 @@ int play(SDL_Renderer *renderer)
         return 1;
     }
 
-    while (game_launched)
+    while (!in->quit)
     {
         frame_limit = SDL_GetTicks() + FPS;
         SDL_RenderClear(renderer);
@@ -73,29 +90,23 @@ int play(SDL_Renderer *renderer)
 
         SDL_RenderPresent(renderer);
 
-        while(SDL_PollEvent(&event) == 1)
-        {
-            switch (event.type)
-            {
-            case SDL_QUIT:
-                destroy_play(texture_arriere_plan, link_actuel, link);
-                return 1;
-            
-            case SDL_KEYDOWN:
-                switch (event.key.keysym.sym)
-                {
-                case SDLK_ESCAPE:
-                    game_launched = SDL_FALSE;
-                    break;
-                
-                default:
-                    break;
-                }
-            
-            default:
-                break;
-            }
-        }
+        update_event(in);
+
+        if(in->key[SDL_SCANCODE_W])
+            deplacer_joueur(&taille_link_actuel, haut);
+        
+        if(in->key[SDL_SCANCODE_S])
+            deplacer_joueur(&taille_link_actuel, bas);
+
+        if(in->key[SDL_SCANCODE_A])
+            deplacer_joueur(&taille_link_actuel, gauche);
+
+        if(in->key[SDL_SCANCODE_D])
+            deplacer_joueur(&taille_link_actuel, droite);
+
+        if(in->key[SDL_SCANCODE_ESCAPE])
+            break;
+
         limite_fps(frame_limit);
     } 
 
