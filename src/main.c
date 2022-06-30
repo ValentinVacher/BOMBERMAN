@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 
         SDL_RenderPresent(renderer);
 
-        while(SDL_PollEvent(&event) == 1)
+        while(SDL_PollEvent(&event))
         {
             switch (event.type)
             {
@@ -48,8 +48,17 @@ int main(int argc, char *argv[])
                     break;
                 
                 case SDLK_1:
+                    SDL_DestroyTexture(texture_menu);
                     if(play(renderer))
                         programme_launched = SDL_FALSE;
+                    
+                    else
+                    {
+                        texture_menu = load_image("src/images/menu.jpg", renderer);
+                        if(texture_menu == NULL)
+                            goto quit;
+                    }
+                    
                     break;
                 
                 default:
