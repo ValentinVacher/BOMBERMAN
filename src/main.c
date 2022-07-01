@@ -32,8 +32,6 @@ int main(int argc, char *argv[])
     {
         frame_limit = SDL_GetTicks() + FPS;
 
-        //SDL_Event event;
-
         if(SDL_RenderCopy(renderer, texture_menu, NULL, NULL) != 0)
         {
             SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
@@ -52,7 +50,7 @@ int main(int argc, char *argv[])
             if(texture_menu == NULL)
                 goto quit;
         }
-        limite_fps(frame_limit);
+        limite_fps(frame_limit, FPS);
     }
 
     statut = EXIT_SUCCESS;

@@ -11,16 +11,16 @@ void destroy_play(SDL_Texture *texture_arriere_plan, SDL_Texture *link_actuel, S
 
 void deplacer_joueur(SDL_Rect *position_link, const int direction)
 {
-    if(direction == haut)
+    if(direction == haut && position_link->y > 0 )
         position_link->y--;
 
-    if(direction == bas)
+    if(direction == bas && (position_link->y + position_link->h) < HAUTEUR)
         position_link->y++;
 
-    if(direction == gauche)
+    if(direction == gauche && position_link->x > 0)
         position_link->x--;
 
-    if(direction == droite)
+    if(direction == droite && (position_link->x + position_link->w) < LARGEUR)
         position_link->x++;
 }
 
@@ -69,7 +69,7 @@ int play(SDL_Renderer *renderer, input *in)
         return 1;
     }
 
-    while (!in->quit)
+    while (!in->quit && !in->key[SDL_SCANCODE_ESCAPE])
     {
         frame_limit = SDL_GetTicks() + FPS;
         SDL_RenderClear(renderer);
@@ -104,10 +104,7 @@ int play(SDL_Renderer *renderer, input *in)
         if(in->key[SDL_SCANCODE_D])
             deplacer_joueur(&taille_link_actuel, droite);
 
-        if(in->key[SDL_SCANCODE_ESCAPE])
-            break;
-
-        limite_fps(frame_limit);
+        limite_fps(frame_limit, 1);
     } 
 
     destroy_play(texture_arriere_plan, link_actuel, link);

@@ -44,7 +44,7 @@ typedef struct input
 
 int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h);
 SDL_Texture *load_image(const char path[], SDL_Renderer *renderer);
-void limite_fps(unsigned int limit);
+void limite_fps(unsigned int limit, int limite_fps);
 void update_event(input *in);
 void free_link(SDL_Texture *link[]);
 int create_link(SDL_Texture *link[], SDL_Renderer *renderer, SDL_Rect taille_link[]);

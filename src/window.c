@@ -41,15 +41,15 @@ SDL_Texture *load_image(const char path[], SDL_Renderer *renderer)
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-void limite_fps(unsigned int limit)
+void limite_fps(unsigned int limit, int limite_fps)
 {
     unsigned int ticks = SDL_GetTicks();
 
     if(limit < ticks)
         return;
     
-    else if(limit > ticks + FPS)
-        SDL_Delay(FPS);
+    else if(limit > ticks + limite_fps)
+        SDL_Delay(limite_fps);
         
     else 
         SDL_Delay(limit - ticks);
