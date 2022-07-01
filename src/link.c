@@ -1,4 +1,7 @@
-#include "source.h"
+#include "constante.h"
+#include "appel.h"
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 void free_link(SDL_Texture *link[])
 {
@@ -11,54 +14,54 @@ void free_link(SDL_Texture *link[])
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-int create_link(SDL_Texture *link[], SDL_Renderer *renderer, SDL_Rect taille_link[])
+int create_link(Link *link, SDL_Renderer *renderer)
 {
     int i;
 
     for(i = 0 ; i < 4 ; i++)
     {
-        taille_link[i].x = 0;
-        taille_link[i].y = 0;
+        link->forme[i].x = 0;
+        link->forme[i].y = 0;
     }
 
     for(i = 2 ; i < 4 ; i++)
     {
-        taille_link[i].h = 110;
-        taille_link[i].w = 85;
-        taille_link[i - 2].w = 90;
+        link->forme[i].h = 110;
+        link->forme[i].w = 85;
+        link->forme[i - 2].w = 90;
     }
 
-    link[0] = load_image("src/images/link_dos.png", renderer);
-    if(link[0] == NULL)
+    link->direction[haut] = load_image("src/images/link_dos.png", renderer);
+    if(link->direction[haut] == NULL)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n",SDL_GetError());
-        free_link(link);
+        free_link(link->direction);
         return -1;
     }
-    taille_link[0].h = 105;
+    link->forme[haut].h = 105;
 
-    link[1] = load_image("src/images/link_face.png", renderer);
-    if(link[1] == NULL)
+    link->direction[bas] = load_image("src/images/link_face.png", renderer);
+    if(link->direction[bas] == NULL)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n",SDL_GetError());
-        free_link(link);
+        free_link(link->direction);
         return -1;
     }
-    taille_link[1].h = 115;
+    link->forme[bas].h = 115;
     
-    link[2] = load_image("src/images/link_gauche.png", renderer);
-    if(link[2] == NULL)
+    link->direction[gauche] = load_image("src/images/link_gauche.png", renderer);
+    if(link->direction[gauche] == NULL)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n",SDL_GetError());
-        free_link(link);
+        free_link(link->direction);
         return -1;
     }
 
-    link[3] = load_image("src/images/link_droite.png", renderer);
-    if(link[3] == NULL)
+    link->direction[droite] = load_image("src/images/link_droite.png", renderer);
+    if(link->direction[droite] == NULL)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n",SDL_GetError());
-        free_link(link);
+        free_link(link->direction);
         return -1;
     }
 

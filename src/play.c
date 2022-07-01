@@ -1,37 +1,60 @@
-#include "source.h"
+#include "constante.h"
+#include "appel.h"
 
-void destroy_play(SDL_Texture *texture_arriere_plan, SDL_Texture *link_actuel, SDL_Texture *link[])
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+void destroy_play(SDL_Texture *texture_arriere_plan, Link *link)
 {
     SDL_DestroyTexture(texture_arriere_plan);
-    SDL_DestroyTexture(link_actuel);
-    free_link(link);
+    SDL_DestroyTexture(link->direction_actuel);
+    free_link(link->direction);
 }
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-void deplacer_joueur(SDL_Rect *position_link, const int direction)
+void deplacer_joueur(Link *link, const int direction)
 {
-    if(direction == haut && position_link->y > 0 )
-        position_link->y--;
+    if(link->deplacement != direction)
+    {
+        link->direction_actuel = link->direction[direction];
+        link->forme[direction].x = link->forme_actuel.x;
+        link->forme[direction].y = link->forme_actuel.y;
+        link->forme_actuel = link->forme[direction];
+    }
 
-    if(direction == bas && (position_link->y + position_link->h) < HAUTEUR)
-        position_link->y++;
+    if(direction == haut && link->forme_actuel.y > 0 )
+    {
+        link->forme_actuel.y--;
+        link->deplacement = haut;
+    }
 
-    if(direction == gauche && position_link->x > 0)
-        position_link->x--;
+    if(direction == bas && (link->forme_actuel.y + link->forme_actuel.h) < HAUTEUR)
+    {
+        link->forme_actuel.y++;
+        link->deplacement = bas;
+    }
 
-    if(direction == droite && (position_link->x + position_link->w) < LARGEUR)
-        position_link->x++;
+    if(direction == gauche && link->forme_actuel.x > 0)
+    {
+        link->forme_actuel.x--;
+        link->deplacement = gauche;
+    }
+
+    if(direction == droite && (link->forme_actuel.x + link->forme_actuel.w) < LARGEUR)
+    {
+        link->forme_actuel.x++;
+        link->deplacement = droite;
+    }
 }
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-int play(SDL_Renderer *renderer, input *in)
+int play(SDL_Renderer *renderer, Input *in)
 {
     SDL_Event event;
     SDL_bool game_launched = SDL_TRUE;
-    SDL_Texture *texture_arriere_plan = NULL, *link[4], *link_actuel = NULL;
-    SDL_Rect taille_link_actuel, taille_link[4];
+    SDL_Texture *texture_arriere_plan = NULL;
+    Link link;
     unsigned int frame_limit = 0;
 
     texture_arriere_plan = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, LARGEUR, HAUTEUR);
@@ -53,19 +76,20 @@ int play(SDL_Renderer *renderer, input *in)
         return 1;
     }
 
-    if(create_link(link, renderer, taille_link) != 0)
+    if(create_link(&link, renderer) != 0)
     {
         SDL_DestroyTexture(texture_arriere_plan);
         return 1;
     }
 
-    link_actuel = link[bas];
-    taille_link_actuel = taille_link[bas];
+    link.direction_actuel = link.direction[bas];
+    link.forme_actuel = link.forme[bas];
+    link.deplacement = bas;
 
-    if(SDL_QueryTexture(link_actuel, NULL, NULL, &taille_link_actuel.w, &taille_link_actuel.h) != 0)
+    if(SDL_QueryTexture(link.direction_actuel, NULL, NULL, &link.forme_actuel.w, &link.forme_actuel.h) != 0)
     {
         SDL_Log("ERREUR : QUERY_TEXTURE > %s\n",SDL_GetError());
-        destroy_play(texture_arriere_plan, link_actuel, link);
+        destroy_play(texture_arriere_plan, &link);
         return 1;
     }
 
@@ -77,14 +101,14 @@ int play(SDL_Renderer *renderer, input *in)
         if(SDL_RenderCopy(renderer, texture_arriere_plan, NULL, NULL) != 0)
         {
             SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
-            destroy_play(texture_arriere_plan, link_actuel, link);
+            destroy_play(texture_arriere_plan, &link);
             return 1;
         }
 
-        if(SDL_RenderCopy(renderer, link_actuel, NULL, &taille_link_actuel) != 0)
+        if(SDL_RenderCopy(renderer, link.direction_actuel, NULL, &link.forme_actuel) != 0)
         {
             SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
-            destroy_play(texture_arriere_plan, link_actuel, link);
+            destroy_play(texture_arriere_plan, &link);
             return 1;
         }
 
@@ -92,22 +116,22 @@ int play(SDL_Renderer *renderer, input *in)
 
         update_event(in);
 
-        if(in->key[SDL_SCANCODE_W])
-            deplacer_joueur(&taille_link_actuel, haut);
+        if(in->key[SDL_SCANCODE_W])   
+            deplacer_joueur(&link, haut);
         
         if(in->key[SDL_SCANCODE_S])
-            deplacer_joueur(&taille_link_actuel, bas);
+            deplacer_joueur(&link, bas);
 
         if(in->key[SDL_SCANCODE_A])
-            deplacer_joueur(&taille_link_actuel, gauche);
+            deplacer_joueur(&link, gauche);
 
         if(in->key[SDL_SCANCODE_D])
-            deplacer_joueur(&taille_link_actuel, droite);
+            deplacer_joueur(&link, droite);
 
         limite_fps(frame_limit, 1);
     } 
 
-    destroy_play(texture_arriere_plan, link_actuel, link);
+    destroy_play(texture_arriere_plan, &link);
                 
     return 0;
 }

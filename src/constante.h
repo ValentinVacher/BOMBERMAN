@@ -1,5 +1,7 @@
-#ifndef __SOURCE__H__
-#define __SOURCE__H__
+#ifndef __CONSTANTE__H__
+#define __CONSTANTE__H__
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -31,25 +33,24 @@ enum
 };
 
 
-typedef struct input
+typedef struct Input
 {
     SDL_bool key[SDL_NUM_SCANCODES];
     SDL_bool quit;
     int x, y, xrel, yrel;
     int xwheel, ywheel;
     SDL_bool mouse[6];
-}input;
+}Input;
+
+typedef struct Link
+{
+    SDL_Texture *direction[4], *direction_actuel;
+    SDL_Rect forme[4], forme_actuel;
+    int deplacement;
+}Link;
+
+
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-
-int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h);
-SDL_Texture *load_image(const char path[], SDL_Renderer *renderer);
-void limite_fps(unsigned int limit, int limite_fps);
-void update_event(input *in);
-void free_link(SDL_Texture *link[]);
-int create_link(SDL_Texture *link[], SDL_Renderer *renderer, SDL_Rect taille_link[]);
-void deplacer_joueur(SDL_Rect *position_link, const int direction);
-void destroy_play(SDL_Texture *texture_arriere_plan, SDL_Texture *link_actuel, SDL_Texture *link[]);
-int play(SDL_Renderer *renderer, input *in);
 
 #endif

@@ -1,6 +1,9 @@
-#include "source.h"
+#include "constante.h"
+#include "appel.h"
 
 //gcc .\src\*.c -o .\bin\main -I include -L .\lib\ -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 int main(int argc, char *argv[])
 {
@@ -9,11 +12,11 @@ int main(int argc, char *argv[])
     SDL_Texture *texture_menu = NULL;
     SDL_Surface *image_menu = NULL;
     SDL_bool programme_launched = SDL_TRUE;
-    input in;
+    Input in;
     unsigned int frame_limit = 0;
     int statut = EXIT_FAILURE;
 
-    memset(&in, SDL_FALSE, sizeof(input));
+    memset(&in, SDL_FALSE, sizeof(Input));
 
     if(init(&window, &renderer, LARGEUR, HAUTEUR) != 0)
         goto quit;
