@@ -47,6 +47,7 @@ int create_link(Link *link, SDL_Renderer *renderer)
         free_link(link->direction);
         return -1;
     }
+    
     link->forme[bas].h = 115;
     
     link->direction[gauche] = load_image("src/images/link_gauche.png", renderer);
