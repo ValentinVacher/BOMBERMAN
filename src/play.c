@@ -20,40 +20,33 @@ void destroy_play(SDL_Texture *texture_arriere_plan, Link *link, SDL_Texture *te
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-void deplacer_joueur(Link *link, const int direction, Input *in)
+void deplacer_joueur(Link *link, const int direction)
 {
-    link->direction_actuel = link->direction[direction];
-    link->forme[direction].x = link->forme_actuel.x;
-    link->forme[direction].y = link->forme_actuel.y;
-    link->forme_actuel = link->forme[direction];
-
-    
-    
-    
+    if((link->colision != droite && link->colision != gauche) || link->forme_actuel.y > mur.y + mur.h || link->forme_actuel.y + link->forme_actuel.h < mur.y)
+    {
+        link->direction_actuel = link->direction[direction];
+        link->forme[direction].x = link->forme_actuel.x;
+        link->forme[direction].y = link->forme_actuel.y;
+        link->forme_actuel = link->forme[direction];
+    }
 
     if(direction == haut && link->forme_actuel.y > 0)
+    {
         link->forme_actuel.y--;
+    }
 
     if(direction == bas && (link->forme_actuel.y + link->forme_actuel.h) < HAUTEUR)
-        link->forme_actuel.y++;
-
-    if(link->colision == gauche && (direction == haut || direction == bas))   
     {
-        link->forme_actuel.x += 5;
-        in->key[SDL_SCANCODE_A] = SDL_FALSE;
+        link->forme_actuel.y++;
     }
-    else if(direction == gauche && link->forme_actuel.x > 0)
+
+    if(direction == gauche && link->forme_actuel.x > 0)
     {
         link->forme_actuel.x--;
         link->colision = -1;
     }
 
-    if(link->colision == droite && (direction == haut || direction == bas))
-    {
-        link->forme_actuel.x -= 5;
-        in->key[SDL_SCANCODE_D] = SDL_FALSE;
-    }
-    else if(direction == droite && (link->forme_actuel.x + link->forme_actuel.w) < LARGEUR)
+    if(direction == droite && (link->forme_actuel.x + link->forme_actuel.w) < LARGEUR)
     {
         link->forme_actuel.x++;
         link->colision = -1;
@@ -168,16 +161,16 @@ int play(SDL_Renderer *renderer, Input *in)
         update_event(in);
 
         if(in->key[SDL_SCANCODE_W])   
-            deplacer_joueur(&link, haut, in);
+            deplacer_joueur(&link, haut);
         
         if(in->key[SDL_SCANCODE_S])
-            deplacer_joueur(&link, bas, in);
+            deplacer_joueur(&link, bas);
 
         if(in->key[SDL_SCANCODE_A])
-            deplacer_joueur(&link, gauche, in);
+            deplacer_joueur(&link, gauche);
 
         if(in->key[SDL_SCANCODE_D])
-            deplacer_joueur(&link, droite, in);
+            deplacer_joueur(&link, droite);
 
         limite_fps(frame_limit, 1);
     } 
