@@ -5,6 +5,7 @@
         "stdio.h": "c",
         "string.h": "c",
         "source.h": "c",
-        "constante.h": "c"
+        "constante.h": "c",
+        "appel.h": "c"
     }
 }

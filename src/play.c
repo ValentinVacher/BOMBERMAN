@@ -1,8 +1,6 @@
 #include "constante.h"
 #include "appel.h"
 
-SDL_Rect mur = {885, 465, 1035, 615};
-
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 void destroy_play(SDL_Texture *texture_arriere_plan, Link *link, SDL_Texture *texture_mur)
@@ -20,64 +18,13 @@ void destroy_play(SDL_Texture *texture_arriere_plan, Link *link, SDL_Texture *te
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-void deplacer_joueur(Link *link, const int direction)
-{
-    if((link->colision != droite && link->colision != gauche) || link->forme_actuel.y > mur.y + mur.h || link->forme_actuel.y + link->forme_actuel.h < mur.y)
-    {
-        link->direction_actuel = link->direction[direction];
-        link->forme[direction].x = link->forme_actuel.x;
-        link->forme[direction].y = link->forme_actuel.y;
-        link->forme_actuel = link->forme[direction];
-    }
-
-    if(direction == haut && link->forme_actuel.y > 0)
-    {
-        link->forme_actuel.y--;
-    }
-
-    if(direction == bas && (link->forme_actuel.y + link->forme_actuel.h) < HAUTEUR)
-    {
-        link->forme_actuel.y++;
-    }
-
-    if(direction == gauche && link->forme_actuel.x > 0)
-    {
-        link->forme_actuel.x--;
-        link->colision = -1;
-    }
-
-    if(direction == droite && (link->forme_actuel.x + link->forme_actuel.w) < LARGEUR)
-    {
-        link->forme_actuel.x++;
-        link->colision = -1;
-    }
-
-    if(SDL_HasIntersection(&link->forme_actuel, &mur))
-    {
-        if(direction == haut && link->forme_actuel.y > 0)
-            link->forme_actuel.y++;
-
-        if(direction == bas && (link->forme_actuel.y + link->forme_actuel.h) < HAUTEUR)
-            link->forme_actuel.y--;
-
-        if(direction == gauche && link->forme_actuel.x > 0)
-            link->forme_actuel.x++;
-
-        if(direction == droite && (link->forme_actuel.x + link->forme_actuel.w) < LARGEUR)
-            link->forme_actuel.x--;
-
-        link->colision = direction;
-    }
-}   
-
-/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-
 int play(SDL_Renderer *renderer, Input *in)
 {
     SDL_Event event;
     SDL_bool game_launched = SDL_TRUE;
     SDL_Texture *texture_arriere_plan = NULL, *texture_mur = NULL;
     Link link;
+    SDL_Rect mur = {885, 465, 1035, 615};
     unsigned int frame_limit = 0;
 
     texture_arriere_plan = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, LARGEUR, HAUTEUR);
@@ -161,16 +108,16 @@ int play(SDL_Renderer *renderer, Input *in)
         update_event(in);
 
         if(in->key[SDL_SCANCODE_W])   
-            deplacer_joueur(&link, haut);
+            deplacer_joueur(&link, haut, mur);
         
         if(in->key[SDL_SCANCODE_S])
-            deplacer_joueur(&link, bas);
+            deplacer_joueur(&link, bas, mur);
 
         if(in->key[SDL_SCANCODE_A])
-            deplacer_joueur(&link, gauche);
+            deplacer_joueur(&link, gauche, mur);
 
         if(in->key[SDL_SCANCODE_D])
-            deplacer_joueur(&link, droite);
+            deplacer_joueur(&link, droite, mur);
 
         limite_fps(frame_limit, 1);
     } 
