@@ -16,21 +16,6 @@ void free_link(SDL_Texture *link[])
 
 int create_link(Link *link, SDL_Renderer *renderer)
 {
-    int i;
-
-    for(i = 0 ; i < 4 ; i++)
-    {
-        link->forme[i].x = 0;
-        link->forme[i].y = 0;
-    }
-
-    for(i = 2 ; i < 4 ; i++)
-    {
-        link->forme[i].h = 110;
-        link->forme[i].w = 85;
-        link->forme[i - 2].w = 90;
-    }
-
     link->direction[haut] = load_image("src/images/link_dos.png", renderer);
     if(link->direction[haut] == NULL)
     {
@@ -38,7 +23,6 @@ int create_link(Link *link, SDL_Renderer *renderer)
         free_link(link->direction);
         return -1;
     }
-    link->forme[haut].h = 105;
 
     link->direction[bas] = load_image("src/images/link_face.png", renderer);
     if(link->direction[bas] == NULL)
@@ -47,8 +31,6 @@ int create_link(Link *link, SDL_Renderer *renderer)
         free_link(link->direction);
         return -1;
     }
-    
-    link->forme[bas].h = 115;
     
     link->direction[gauche] = load_image("src/images/link_gauche.png", renderer);
     if(link->direction[gauche] == NULL)
@@ -65,6 +47,11 @@ int create_link(Link *link, SDL_Renderer *renderer)
         free_link(link->direction);
         return -1;
     }
+
+    link->forme.x = 0;
+    link->forme.y = 0;
+    link->forme.w = 90;
+    link->forme.h = 115;
 
     return 0;
 }
