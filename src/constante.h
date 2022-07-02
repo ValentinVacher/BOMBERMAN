@@ -18,16 +18,17 @@
 
 enum
 {
-    haut,//0
-    bas,//1
-    gauche,//2
-    droite//3
+    HAUT,//0
+    BAS,//1
+    GAUCHE,//2
+    DROITE//3
 };
 
 enum
 {
-    vide,//0
-    mur_indestructible,//1
+    VIDE,//0
+    MUT_INDESTRUCTIBLE,//1
+    LINK//2
 };
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -49,7 +50,7 @@ typedef struct Link
 
 typedef struct Map
 {
-    SDL_Rect case;
+    SDL_Rect coord_case;
     int type;
 }Map;
 

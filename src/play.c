@@ -28,7 +28,7 @@ int play(SDL_Renderer *renderer, Input *in)
     SDL_Rect mur = {0, 0, 150, 150};
     unsigned int frame_limit = 0;   
 
-
+    create_map(map);
 
     texture_arriere_plan = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, LARGEUR, HAUTEUR);
     if(texture_arriere_plan == NULL)
@@ -70,12 +70,18 @@ int play(SDL_Renderer *renderer, Input *in)
         return 1;
     }
 
-    link.direction_actuel = link.direction[bas];
+    link.direction_actuel = link.direction[BAS];
 
     while (!in->quit && !in->key[SDL_SCANCODE_ESCAPE])
     {
         frame_limit = SDL_GetTicks() + FPS;
-        SDL_RenderClear(renderer);
+
+        if(SDL_RenderClear(renderer) != 0)
+        {
+            SDL_Log("ERREUR : QUERY_TEXTURE > %s\n",SDL_GetError());
+            destroy_play(texture_arriere_plan, &link, texture_mur);
+            return 1;
+        }
 
         if(SDL_QueryTexture(link.direction_actuel, NULL, NULL, &link.forme.w, &link.forme.h) != 0)
         {
@@ -91,7 +97,7 @@ int play(SDL_Renderer *renderer, Input *in)
             return 1;
         }
 
-        if(!create_map(renderer, texture_mur, map))
+        if(!print_wall(map, renderer, texture_mur))
         {
             destroy_play(texture_arriere_plan, &link, texture_mur);
             return 1;
@@ -109,29 +115,31 @@ int play(SDL_Renderer *renderer, Input *in)
         update_event(in);
 
         if(in->key[SDL_SCANCODE_W])   
-            deplacer_joueur(&link, haut);
-        
+        {
+            deplacer_joueur(&link, HAUT);
+            detecte_map(map, &link, HAUT);
+        }
+
         if(in->key[SDL_SCANCODE_S])
-            deplacer_joueur(&link, bas);
+        {
+            deplacer_joueur(&link, BAS);
+            detecte_map(map, &link, BAS);
+        }
 
         if(in->key[SDL_SCANCODE_A])
-            deplacer_joueur(&link, gauche);
+        {
+            deplacer_joueur(&link, GAUCHE);
+            detecte_map(map, &link, GAUCHE);
+        }
 
         if(in->key[SDL_SCANCODE_D])
-            deplacer_joueur(&link, droite);
+        {
+            deplacer_joueur(&link, DROITE);
+            detecte_map(map, &link, DROITE);
+        }
 
         limite_fps(frame_limit, 1);
     } 
-
-    /*int i, j;
-
-    for(i = 0 ; i < LARGEUR / 150 ; i++)
-    {
-        for(j = 0 ; j < HAUTEUR / 150 ; j++)
-        {
-            printf("map[%d][%d] = %d\n", i, j, map[i][j]);
-        }
-    }*/
 
     destroy_play(texture_arriere_plan, &link, texture_mur);
                 

@@ -16,32 +16,32 @@ void free_link(SDL_Texture *link[])
 
 int create_link(Link *link, SDL_Renderer *renderer)
 {
-    link->direction[haut] = load_image("src/images/link_dos.png", renderer);
-    if(link->direction[haut] == NULL)
+    link->direction[HAUT] = load_image("src/images/link_dos.png", renderer);
+    if(link->direction[HAUT] == NULL)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n",SDL_GetError());
         free_link(link->direction);
         return -1;
     }
 
-    link->direction[bas] = load_image("src/images/link_face.png", renderer);
-    if(link->direction[bas] == NULL)
+    link->direction[BAS] = load_image("src/images/link_face.png", renderer);
+    if(link->direction[BAS] == NULL)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n",SDL_GetError());
         free_link(link->direction);
         return -1;
     }
     
-    link->direction[gauche] = load_image("src/images/link_gauche.png", renderer);
-    if(link->direction[gauche] == NULL)
+    link->direction[GAUCHE] = load_image("src/images/link_gauche.png", renderer);
+    if(link->direction[GAUCHE] == NULL)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n",SDL_GetError());
         free_link(link->direction);
         return -1;
     }
 
-    link->direction[droite] = load_image("src/images/link_droite.png", renderer);
-    if(link->direction[droite] == NULL)
+    link->direction[DROITE] = load_image("src/images/link_droite.png", renderer);
+    if(link->direction[DROITE] == NULL)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n",SDL_GetError());
         free_link(link->direction);

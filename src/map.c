@@ -3,27 +3,25 @@
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-void create_map(SDL_Renderer *renderer, SDL_Texture *texture_mur, Map map[][HAUTEUR / 150])
+void create_map(Map map[][HAUTEUR / 150])
 {
     int i, j;
 
     for(i = 0 ; i < LARGEUR / 150 ; i++)
-    {
         for(j = 0 ; j < HAUTEUR / 150 ; j++)
         {
-            map[i][j].case.x = i * 150;
-            map[i][j].case.y = j * 150;
-            map[i][j].case.x = 150;
-            map[i][j].case.x = 150;
+            map[i][j].coord_case.x = i * 150;
+            map[i][j].coord_case.y = j * 150;
+            map[i][j].coord_case.w = 150;
+            map[i][j].coord_case.h = 150;
 
             if(i % 2 != 0 && j % 2 != 0)
             {
-                map[i][j].type = mur_indestructible;
+                map[i][j].type = MUT_INDESTRUCTIBLE;
             }
             else    
-                map[i][j].type = vide;
+                map[i][j].type = VIDE;
         }
-    }
 }
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -32,16 +30,78 @@ SDL_bool print_wall(Map map[][HAUTEUR / 150], SDL_Renderer *renderer, SDL_Textur
 {
     int i, j;
 
-    for(i = 0 ; i < LARGEUR / 150 ; i++)
-    {   
+    for(i = 0 ; i < LARGEUR / 150 ; i++) 
         for(j = 0 ; j < HAUTEUR / 150 ; j++)
-            if(map[i][j].type == mur_indestructible)
-                if(SDL_RenderCopy(renderer, texture_mur, NULL, &map[i][j].case) != 0)
+            if(map[i][j].type == MUT_INDESTRUCTIBLE)
+                if(SDL_RenderCopy(renderer, texture_mur, NULL, &map[i][j].coord_case) != 0)
                 {
                     SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
                     return SDL_FALSE;
                 }
-    }
 
     return SDL_TRUE;
 }
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+void detecte_map(Map map[][HAUTEUR / 150], Link *link, const int direction)
+{
+    int i, j;
+
+    for(i = 0 ; i < LARGEUR / 150 ; i++)
+        for(j = 0 ; j < HAUTEUR / 150 ; j++)
+        {
+            if(SDL_HasIntersection(&link->forme, &map[i][j].coord_case))   
+            {
+                if(map[i][j].type == VIDE)
+                    map[i][j].type = LINK;
+
+                else if(map[i][j].type == MUT_INDESTRUCTIBLE)
+                {
+                    if(direction == HAUT)
+                        link->forme.y++;
+
+                    else if(direction == BAS)
+                        link->forme.y--;
+
+                    else if(direction == GAUCHE)
+                        link->forme.x++;
+
+                    else if(direction == DROITE)
+                        link->forme.x--;
+                }
+            }
+
+            else if(map[i][j].type == LINK)
+                map[i][j].type = VIDE;
+        } 
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+void deplacer_joueur(Link *link, const int direction)
+{
+    link->direction_actuel = link->direction[direction];
+
+    if(direction == HAUT && link->forme.y > 0)
+    {
+        link->forme.y--;
+    }
+
+    if(direction == BAS && (link->forme.y + link->forme.h) < HAUTEUR)
+    {
+        link->forme.y++;
+    }
+
+    if(direction == GAUCHE && link->forme.x > 0)
+    {
+        link->forme.x--;
+    }
+
+    if(direction == DROITE && (link->forme.x + link->forme.w) < LARGEUR)
+    {
+        link->forme.x++;
+    }
+
+    
+} 

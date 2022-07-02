@@ -8,13 +8,10 @@ int play(SDL_Renderer *renderer, Input *in);
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-void detection_colision(Link *link, const int direction);
+void create_map(Map map[][HAUTEUR / 150]);
+SDL_bool print_wall(Map map[][HAUTEUR / 150], SDL_Renderer *renderer, SDL_Texture *texture_mur);
+void detecte_map(Map map[][HAUTEUR / 150], Link *link, const int direction);
 void deplacer_joueur(Link *link, const int direction);
-
-/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-
-void create_map(SDL_Renderer *renderer, SDL_Texture *texture_mur, Map map[][HAUTEUR / 150]);
-SDL_bool print_wall(SDL_Rect mur[], int nb_mur, SDL_Renderer *renderer, SDL_Texture *texture_mur);
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
