@@ -8,9 +8,13 @@ int play(SDL_Renderer *renderer, Input *in);
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-void link_sprite(Link *link, const int direction, const SDL_Rect mur);
-void destection_colision(Link *link, const int direction, const SDL_Rect mur);
-void deplacer_joueur(Link *link, const int direction, const SDL_Rect mur);
+void link_sprite(Link *link, const int direction, const SDL_Rect mur[], const int nb_mur);
+void destection_colision(Link *link, const int direction, const SDL_Rect mur[], const int _nb_mur);
+void deplacer_joueur(Link *link, const int direction, const SDL_Rect mur[], const int nb_mur);
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+SDL_bool print_wall(SDL_Rect mur[], int nb_mur, SDL_Renderer *renderer, SDL_Texture *texture_mur);
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 

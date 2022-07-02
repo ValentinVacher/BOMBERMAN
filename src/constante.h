@@ -39,7 +39,7 @@ typedef struct Link
 {
     SDL_Texture *direction[4], *direction_actuel;
     SDL_Rect forme[4], forme_actuel;
-    int colision;
+    int colision, mur;
 }Link;
 
 
