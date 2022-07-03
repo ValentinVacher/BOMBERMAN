@@ -22,7 +22,7 @@ int play(SDL_Renderer *renderer, Input *in)
 {
     SDL_Event event;
     SDL_bool game_launched = SDL_TRUE;
-    SDL_Texture *texture_arriere_plan = NULL, *texture_mur = NULL;
+    SDL_Texture *texture_arriere_plan = NULL, *texture_mur_destructible = NULL;
     Link link;
     Map map[LARGEUR / 150][HAUTEUR / 150];
     SDL_Rect mur = {0, 0, 150, 150};
@@ -30,31 +30,31 @@ int play(SDL_Renderer *renderer, Input *in)
 
     create_map(map);
 
-    texture_arriere_plan = load_image("src/images/map.png", renderer);
+    texture_arriere_plan = load_image("src/images/map.jpg", renderer);
     if(texture_arriere_plan == NULL)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n", SDL_GetError());
         return 1;
     }
 
-    /*texture_mur = load_image("src/images/mur.png", renderer);
-    if(texture_mur == NULL)
+    texture_mur_destructible = load_image("src/images/mur_destructible.png", renderer);
+    if(texture_mur_destructible == NULL)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n", SDL_GetError());
-        destroy_play(texture_arriere_plan, NULL, texture_mur);
+        destroy_play(texture_arriere_plan, NULL, texture_mur_destructible);
         return 1;
-    }*/
+    }
 
     if(SDL_QueryTexture(texture_arriere_plan, NULL, NULL, NULL, NULL) != 0)
     {
         SDL_Log("ERREUR : QUERY_TEXTURE > %s\n",SDL_GetError());
-        destroy_play(texture_arriere_plan, NULL, texture_mur);
+        destroy_play(texture_arriere_plan, NULL, texture_mur_destructible);
         return 1;
     }
 
     if(create_link(&link, renderer) != 0)
     {
-        destroy_play(texture_arriere_plan, NULL, texture_mur);
+        destroy_play(texture_arriere_plan, NULL, texture_mur_destructible);
         return 1;
     }
 
@@ -65,34 +65,34 @@ int play(SDL_Renderer *renderer, Input *in)
         if(SDL_RenderClear(renderer) != 0)
         {
             SDL_Log("ERREUR : QUERY_TEXTURE > %s\n",SDL_GetError());
-            destroy_play(texture_arriere_plan, &link, texture_mur);
+            destroy_play(texture_arriere_plan, &link, texture_mur_destructible);
             return 1;
         }
 
         if(SDL_QueryTexture(link.direction_actuel, NULL, NULL, &link.forme.w, &link.forme.h) != 0)
         {
             SDL_Log("ERREUR : QUERY_TEXTURE > %s\n",SDL_GetError());
-            destroy_play(texture_arriere_plan, &link, texture_mur);
+            destroy_play(texture_arriere_plan, &link, texture_mur_destructible);
             return 1;
         }
 
         if(SDL_RenderCopy(renderer, texture_arriere_plan, NULL, NULL) != 0)
         {
             SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
-            destroy_play(texture_arriere_plan, &link, texture_mur);
+            destroy_play(texture_arriere_plan, &link, texture_mur_destructible);
             return 1;
         }
 
-        /*if(!print_wall(map, renderer, texture_mur))
+        if(!print_wall(map, renderer, texture_mur_destructible))
         {
-            destroy_play(texture_arriere_plan, &link, texture_mur);
+            destroy_play(texture_arriere_plan, &link, texture_mur_destructible);
             return 1;
-        }*/
+        }
 
         if(SDL_RenderCopy(renderer, link.direction_actuel, NULL, &link.forme) != 0)
         {
             SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
-            destroy_play(texture_arriere_plan, &link, texture_mur);
+            destroy_play(texture_arriere_plan, &link, texture_mur_destructible);
             return 1;
         }
 
@@ -127,7 +127,7 @@ int play(SDL_Renderer *renderer, Input *in)
         limite_fps(frame_limit, 1);
     } 
 
-    destroy_play(texture_arriere_plan, &link, texture_mur);
+    destroy_play(texture_arriere_plan, &link, texture_mur_destructible);
                 
     return 0;
 }

@@ -7,8 +7,6 @@ void create_map(Map map[][HAUTEUR / 150])
 {
     int i, j;
 
-    map[0][0].type = LINK;
-
     for(i = 0 ; i < LARGEUR / 150 ; i++)
         for(j = 0 ; j < HAUTEUR / 150 ; j++)
         {
@@ -19,23 +17,39 @@ void create_map(Map map[][HAUTEUR / 150])
 
             if(i % 2 != 0 && j % 2 != 0)
             {
-                map[i][j].type = MUT_INDESTRUCTIBLE;
+                map[i][j].type = MUR_INDESTRUCTIBLE;
             }
             else    
-                map[i][j].type = VIDE;
+                map[i][j].type = MUR_DESTRUCTIBLE;
         }
+
+    map[0][0].type = LINK;
+    map[1][0].type = VIDE;
+    map[0][1].type = VIDE;
+
+    map[LARGEUR / 150 - 1][0].type = VIDE;
+    map[LARGEUR / 150 - 2][0].type = VIDE;
+    map[LARGEUR / 150 - 1][1].type = VIDE;
+
+    map[0][HAUTEUR / 150 - 1].type = VIDE;
+    map[0][HAUTEUR / 150 - 2].type = VIDE;
+    map[1][HAUTEUR / 150 - 1].type = VIDE;
+
+    map[LARGEUR / 150 - 1][HAUTEUR / 150 - 1].type = VIDE;
+    map[LARGEUR / 150 - 2][HAUTEUR / 150 - 1].type = VIDE;
+    map[LARGEUR / 150 - 1][HAUTEUR / 150 - 2].type = VIDE;
 }
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-SDL_bool print_wall(Map map[][HAUTEUR / 150], SDL_Renderer *renderer, SDL_Texture *texture_mur)
+SDL_bool print_wall(Map map[][HAUTEUR / 150], SDL_Renderer *renderer, SDL_Texture *texture_mur_destructible)
 {
     int i, j;
 
     for(i = 0 ; i < LARGEUR / 150 ; i++) 
         for(j = 0 ; j < HAUTEUR / 150 ; j++)
-            if(map[i][j].type == MUT_INDESTRUCTIBLE)
-                if(SDL_RenderCopy(renderer, texture_mur, NULL, &map[i][j].coord_case) != 0)
+            if(map[i][j].type == MUR_DESTRUCTIBLE)
+                if(SDL_RenderCopy(renderer, texture_mur_destructible, NULL, &map[i][j].coord_case) != 0)
                 {
                     SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
                     return SDL_FALSE;
@@ -58,7 +72,7 @@ void detecte_map(Map map[][HAUTEUR / 150], Link *link, const int direction)
                 if(map[i][j].type == VIDE)
                     map[i][j].type = LINK;
 
-                else if(map[i][j].type == MUT_INDESTRUCTIBLE)
+                else if(map[i][j].type == MUR_INDESTRUCTIBLE || map[i][j].type == MUR_DESTRUCTIBLE)
                 {
                     if(direction == HAUT)
                     {
