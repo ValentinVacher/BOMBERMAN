@@ -24,9 +24,8 @@ int play(SDL_Renderer *renderer, Input *in)
     SDL_bool game_launched = SDL_TRUE;
     SDL_Texture *texture_arriere_plan = NULL, *texture_mur_destructible = NULL;
     Link link;
-    Map map[LARGEUR / 150][HAUTEUR / 150];
-    SDL_Rect mur = {0, 0, 150, 150};
-    unsigned int frame_limit = 0;   
+    Map map[LARGEUR][HAUTEUR];
+    unsigned int frame_limit = 0;  
 
     create_map(map);
 
@@ -124,7 +123,7 @@ int play(SDL_Renderer *renderer, Input *in)
             detecte_map(map, &link, DROITE);
         }
 
-        limite_fps(frame_limit, 1);
+        limite_fps(frame_limit, 1); 
     } 
 
     destroy_play(texture_arriere_plan, &link, texture_mur_destructible);

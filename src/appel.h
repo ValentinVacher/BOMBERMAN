@@ -8,9 +8,9 @@ int play(SDL_Renderer *renderer, Input *in);
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-void create_map(Map map[][HAUTEUR / 150]);
-SDL_bool print_wall(Map map[][HAUTEUR / 150], SDL_Renderer *renderer, SDL_Texture *texture_mur_destructible);
-void detecte_map(Map map[][HAUTEUR / 150], Link *link, const int direction);
+void create_map(Map map[][HAUTEUR]);
+SDL_bool print_wall(Map map[][HAUTEUR], SDL_Renderer *renderer, SDL_Texture *texture_mur_destructible);
+void detecte_map(Map map[][HAUTEUR], Link *link, const int direction);
 void deplacer_joueur(Link *link, const int direction);
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/

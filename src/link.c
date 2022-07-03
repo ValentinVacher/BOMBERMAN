@@ -48,11 +48,11 @@ int create_link(Link *link, SDL_Renderer *renderer)
         return -1;
     }
 
-    link->forme.x = 0;
-    link->forme.y = 0;
+    link->forme.x = 135;
+    link->forme.y = 15;
 
-    link->hitbox.x = 5;
-    link->hitbox.y = 10;
+    link->hitbox.x = 140;
+    link->hitbox.y = 25;
     link->hitbox.w = 80;
     link->hitbox.h = 105;
 

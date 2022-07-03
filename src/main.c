@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 
     memset(&in, SDL_FALSE, sizeof(Input));
 
-    if(init(&window, &renderer, LARGEUR, HAUTEUR) != 0)
+    if(init(&window, &renderer, LARGEUR_WINDOW, HAUTEUR_WINDOW) != 0)
         goto quit;
 
     texture_menu = load_image("src/images/menu.jpg", renderer);
