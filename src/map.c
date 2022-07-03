@@ -7,6 +7,8 @@ void create_map(Map map[][HAUTEUR / 150])
 {
     int i, j;
 
+    map[0][0].type = LINK;
+
     for(i = 0 ; i < LARGEUR / 150 ; i++)
         for(j = 0 ; j < HAUTEUR / 150 ; j++)
         {
@@ -51,7 +53,7 @@ void detecte_map(Map map[][HAUTEUR / 150], Link *link, const int direction)
     for(i = 0 ; i < LARGEUR / 150 ; i++)
         for(j = 0 ; j < HAUTEUR / 150 ; j++)
         {
-            if(SDL_HasIntersection(&link->forme, &map[i][j].coord_case))   
+            if(SDL_HasIntersection(&link->hitbox, &map[i][j].coord_case))   
             {
                 if(map[i][j].type == VIDE)
                     map[i][j].type = LINK;
@@ -59,16 +61,28 @@ void detecte_map(Map map[][HAUTEUR / 150], Link *link, const int direction)
                 else if(map[i][j].type == MUT_INDESTRUCTIBLE)
                 {
                     if(direction == HAUT)
+                    {
                         link->forme.y++;
+                        link->hitbox.y++;
+                    }
 
                     else if(direction == BAS)
+                    {
                         link->forme.y--;
+                        link->hitbox.y--;
+                    }
 
                     else if(direction == GAUCHE)
+                    {
                         link->forme.x++;
+                        link->hitbox.x++;
+                    }
 
                     else if(direction == DROITE)
+                    {
                         link->forme.x--;
+                        link->hitbox.x--;
+                    }
                 }
             }
 
@@ -86,22 +100,24 @@ void deplacer_joueur(Link *link, const int direction)
     if(direction == HAUT && link->forme.y > 0)
     {
         link->forme.y--;
+        link->hitbox.y--;
     }
 
     if(direction == BAS && (link->forme.y + link->forme.h) < HAUTEUR)
     {
         link->forme.y++;
+        link->hitbox.y++;
     }
 
     if(direction == GAUCHE && link->forme.x > 0)
     {
         link->forme.x--;
+        link->hitbox.x--;
     }
 
     if(direction == DROITE && (link->forme.x + link->forme.w) < LARGEUR)
     {
         link->forme.x++;
+        link->hitbox.x++;
     }
-
-    
 } 

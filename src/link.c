@@ -50,8 +50,13 @@ int create_link(Link *link, SDL_Renderer *renderer)
 
     link->forme.x = 0;
     link->forme.y = 0;
-    link->forme.w = 90;
-    link->forme.h = 115;
+
+    link->hitbox.x = 3;
+    link->hitbox.y = 10;
+    link->hitbox.w = 85;
+    link->hitbox.h = 105;
+
+    link->direction_actuel = link->direction[BAS];
 
     return 0;
 }

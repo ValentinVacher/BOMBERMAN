@@ -45,7 +45,7 @@ typedef struct Input
 typedef struct Link
 {
     SDL_Texture *direction[4], *direction_actuel;
-    SDL_Rect forme;
+    SDL_Rect forme, hitbox;
 }Link;
 
 typedef struct Map
