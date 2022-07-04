@@ -1,7 +1,7 @@
 #include "constante.h"
 #include "appel.h"
 
-//gcc .\src\*.c -o .\bin\main -I include -L .\lib\ -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+//gcc .\src\*.c -o .\bin\main -I include -L .\lib\ -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -13,13 +13,23 @@ int main(int argc, char *argv[])
     SDL_Surface *image_menu = NULL;
     SDL_bool programme_launched = SDL_TRUE;
     Input in;
+    Mix_Music *music;
     unsigned int frame_limit = 0;
     int statut = EXIT_FAILURE;
+
+    printf("test\n");
 
     memset(&in, SDL_FALSE, sizeof(Input));
 
     if(init(&window, &renderer, LARGEUR_WINDOW, HAUTEUR_WINDOW) != 0)
         goto quit;
+
+    music = Mix_LoadMUS("src/musiques/the-legend-of-zelda-links-awakening-ost-overworld.mp3");
+    if(music == NULL)
+    {
+        SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
+        goto quit;
+    }
 
     texture_menu = load_image("src/images/menu.jpg", renderer);
     if(texture_menu == NULL)
@@ -27,9 +37,17 @@ int main(int argc, char *argv[])
 
     if(SDL_QueryTexture(texture_menu, NULL, NULL, NULL, NULL) != 0)
     {
-        SDL_Log("ERREUR : QUERY_TEXTURE > %s\n",SDL_GetError());
+        SDL_Log("ERREUR : QUERY_TEXTURE > %s\n", SDL_GetError());
         goto quit;
     }
+
+    if(Mix_PlayMusic(music, -1) != 0)
+    {
+        SDL_Log("ERREUR : PLAY_MUSIC > %s\n", Mix_GetError());
+        goto quit;
+    }
+
+    printf("test\n");
     
     while(!in.quit)
     {
@@ -37,7 +55,7 @@ int main(int argc, char *argv[])
 
         if(SDL_RenderCopy(renderer, texture_menu, NULL, NULL) != 0)
         {
-            SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
+            SDL_Log("ERREUR : RENDER_COPY > %s\n", SDL_GetError());
             goto quit;
         }
 
@@ -60,6 +78,9 @@ int main(int argc, char *argv[])
 
     quit:
 
+    if(music != NULL)
+        Mix_FreeMusic(music);
+
     if(texture_menu != NULL)    
         SDL_DestroyTexture(texture_menu);
 
@@ -68,6 +89,9 @@ int main(int argc, char *argv[])
 
     if(window != NULL)
         SDL_DestroyWindow(window);
+ 
+    Mix_CloseAudio();
+    SDL_Quit();
 
     return statut;
 }

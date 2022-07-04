@@ -11,6 +11,12 @@ int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h)
         return -1;
     }
 
+    if(Mix_OpenAudio(96000, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) != 0)
+    {
+        SDL_Log("ERREUR : OPEN_AUDIO > %s\n", Mix_GetError());
+        return -1;
+    }
+
     if(SDL_CreateWindowAndRenderer(w, h, SDL_WINDOW_SHOWN, window, renderer) != 0)
     {
         SDL_Log("ERREUR : CREATE_WINDOW_OR_RENDERER > %s\n",SDL_GetError());
