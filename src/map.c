@@ -5,7 +5,25 @@
 
 void create_map(Map map[][HAUTEUR])
 {
-    int i, j;
+    int i, j, nb_block = 0, compteur = 2;
+
+    srand(time(NULL));
+
+    map[0][0].type = LINK;
+    map[1][0].type = VIDE_CONSTANT;
+    map[0][1].type = VIDE_CONSTANT;
+
+    map[LARGEUR - 1][0].type = VIDE_CONSTANT;
+    map[LARGEUR - 2][0].type = VIDE_CONSTANT;
+    map[LARGEUR - 1][1].type = VIDE_CONSTANT;
+
+    map[0][HAUTEUR - 1].type = VIDE_CONSTANT;
+    map[0][HAUTEUR - 2].type = VIDE_CONSTANT;
+    map[1][HAUTEUR - 1].type = VIDE_CONSTANT;
+
+    map[LARGEUR - 1][HAUTEUR - 1].type = VIDE_CONSTANT;
+    map[LARGEUR - 2][HAUTEUR - 1].type = VIDE_CONSTANT;
+    map[LARGEUR - 1][HAUTEUR - 2].type = VIDE_CONSTANT;
 
     for(i = 0 ; i < LARGEUR ; i++)
         for(j = 0 ; j < HAUTEUR ; j++)
@@ -16,28 +34,24 @@ void create_map(Map map[][HAUTEUR])
             map[i][j].coord_case.h = 150;
 
             if(i % 2 != 0 && j % 2 != 0)
-            {
                 map[i][j].type = MUR_INDESTRUCTIBLE;
-            }
-            else    
-                map[i][j].type = MUR_DESTRUCTIBLE;
+
+            else if(map[i][j].type != VIDE_CONSTANT && map[i][j].type != LINK)  
+                map[i][j].type = VIDE;
         }
 
-    map[0][0].type = LINK;
-    map[1][0].type = VIDE;
-    map[0][1].type = VIDE;
+    while (nb_block < 40)
+    {
+        for(i = 0 ; i < LARGEUR ; i++)
+            for(j = 0 ; j < HAUTEUR ; j++)
+                if(map[i][j].type == VIDE && rand() % compteur > 0 && nb_block < 40)
+                { 
+                    map[i][j].type = MUR_DESTRUCTIBLE;
+                    nb_block++;
+                }
 
-    map[LARGEUR - 1][0].type = VIDE;
-    map[LARGEUR - 2][0].type = VIDE;
-    map[LARGEUR - 1][1].type = VIDE;
-
-    map[0][HAUTEUR - 1].type = VIDE;
-    map[0][HAUTEUR - 2].type = VIDE;
-    map[1][HAUTEUR - 1].type = VIDE;
-
-    map[LARGEUR - 1][HAUTEUR - 1].type = VIDE;
-    map[LARGEUR - 2][HAUTEUR - 1].type = VIDE;
-    map[LARGEUR - 1][HAUTEUR - 2].type = VIDE;
+        compteur++;
+    }  
 }
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
