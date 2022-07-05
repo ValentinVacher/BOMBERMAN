@@ -3,7 +3,7 @@
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-void destroy_play(SDL_Texture *texture_arriere_plan, Link *link, SDL_Texture *texture_mur);
+void destroy_play(SDL_Texture *texture_arriere_plan, Link *link, SDL_Texture *texture_mur, Mix_Music *music);
 int play(SDL_Renderer *renderer, Input *in);
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -22,6 +22,7 @@ int create_link(Link *link, SDL_Renderer *renderer);
 
 int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h);
 SDL_Texture *load_image(const char path[], SDL_Renderer *renderer);
+int change_music(const int debut, const int duree, int *music_changement, const char path[], Mix_Music *music);
 void limite_fps(unsigned int limit, int limite_fps);
 void update_event(Input *in);
 

@@ -50,6 +50,31 @@ SDL_Texture *load_image(const char path[], SDL_Renderer *renderer)
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
+int change_music(const int debut, const int duree, int *music_changement, const char path[], Mix_Music *music)
+{
+    if(SDL_GetTicks() - debut >= duree && *music_changement == 0)
+    {
+        music = Mix_LoadMUS(path);
+        if(music == NULL)
+        {
+            SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
+            return 1;
+        }
+
+        *music_changement += 1;
+
+        if(Mix_PlayMusic(music, -1) != 0)
+        {
+            SDL_Log("ERREUR : PLAY_MUSIC > %s\n", Mix_GetError());
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
 void limite_fps(unsigned int limit, int limite_fps)
 {
     unsigned int ticks = SDL_GetTicks();

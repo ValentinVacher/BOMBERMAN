@@ -16,15 +16,15 @@ int main(int argc, char *argv[])
     Mix_Music *music;
     unsigned int frame_limit = 0;
     int statut = EXIT_FAILURE;
-
-    printf("test\n");
+    int debut = 0;
+    int music_changement = 0;
 
     memset(&in, SDL_FALSE, sizeof(Input));
 
     if(init(&window, &renderer, LARGEUR_WINDOW, HAUTEUR_WINDOW) != 0)
         goto quit;
 
-    music = Mix_LoadMUS("src/musiques/the-legend-of-zelda-links-awakening-ost-overworld.mp3");
+    music = Mix_LoadMUS("src/musiques/intro_musique_menu.mp3");
     if(music == NULL)
     {
         SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
@@ -41,17 +41,18 @@ int main(int argc, char *argv[])
         goto quit;
     }
 
-    if(Mix_PlayMusic(music, -1) != 0)
+    if(Mix_PlayMusic(music, 1) != 0)
     {
         SDL_Log("ERREUR : PLAY_MUSIC > %s\n", Mix_GetError());
         goto quit;
     }
-
-    printf("test\n");
     
     while(!in.quit)
     {
         frame_limit = SDL_GetTicks() + FPS;
+
+        if(change_music(debut, 35168, &music_changement, "src/musiques/musique_menu.mp3", music) == -1)
+            goto quit;
 
         if(SDL_RenderCopy(renderer, texture_menu, NULL, NULL) != 0)
         {
@@ -65,8 +66,25 @@ int main(int argc, char *argv[])
 
         if(in.key[40])
         {
+            Mix_FreeMusic(music);
             SDL_DestroyTexture(texture_menu);
-            play(renderer, &in);  
+
+            if(play(renderer, &in))
+                goto quit;
+
+            music = Mix_LoadMUS("src/musiques/intro_musique_menu.mp3");
+            if(music == NULL)
+            {
+                SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
+                goto quit;
+            }
+
+            if(Mix_PlayMusic(music, -1) != 0)
+            {
+                SDL_Log("ERREUR : PLAY_MUSIC > %s\n", Mix_GetError());
+                goto quit;
+            }
+
             texture_menu = load_image("src/images/menu.jpg", renderer);
             if(texture_menu == NULL)
                 goto quit;

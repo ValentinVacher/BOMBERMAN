@@ -7,6 +7,7 @@ void create_map(Map map[][HAUTEUR])
 {
     int i, j, nb_block = 0, compteur = 2;
 
+    printf("SEED : %d\n",time(NULL));
     srand(time(NULL));
 
     map[0][0].type = LINK;
