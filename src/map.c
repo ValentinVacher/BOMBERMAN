@@ -22,7 +22,7 @@ void create_map(Map map[][HAUTEUR])
     map[0][HAUTEUR - 2].type = VIDE_CONSTANT;
     map[1][HAUTEUR - 1].type = VIDE_CONSTANT;
 
-    map[LARGEUR - 1][HAUTEUR - 1].type = VIDE_CONSTANT;
+    map[LARGEUR - 1][HAUTEUR - 1].type = LINK_ROUGE;
     map[LARGEUR - 2][HAUTEUR - 1].type = VIDE_CONSTANT;
     map[LARGEUR - 1][HAUTEUR - 2].type = VIDE_CONSTANT;
 
@@ -37,7 +37,7 @@ void create_map(Map map[][HAUTEUR])
             if(i % 2 != 0 && j % 2 != 0)
                 map[i][j].type = MUR_INDESTRUCTIBLE;
 
-            else if(map[i][j].type != VIDE_CONSTANT && map[i][j].type != LINK)  
+            else if(map[i][j].type != VIDE_CONSTANT && map[i][j].type != LINK && map[i][j].type != LINK_ROUGE)  
                 map[i][j].type = VIDE;
         }
 
@@ -132,7 +132,7 @@ void deplacer_joueur(Link *link, const int direction)
         link->hitbox.y--;
     }
 
-    if(direction == BAS && (link->hitbox.y + link->hitbox.h) < HAUTEUR_WINDOW + MUR_HAUTEUR)
+    if(direction == BAS && (link->hitbox.y + link->hitbox.h) < HAUTEUR_WINDOW - MUR_HAUTEUR)
     {
         link->forme.y++;
         link->hitbox.y++;
@@ -144,7 +144,7 @@ void deplacer_joueur(Link *link, const int direction)
         link->hitbox.x--;
     }
 
-    if(direction == DROITE && (link->hitbox.x + link->hitbox.w) < LARGEUR_WINDOW + MUR_LARGEUR)
+    if(direction == DROITE && (link->hitbox.x + link->hitbox.w) < LARGEUR_WINDOW - MUR_LARGEUR)
     {
         link->forme.x++;
         link->hitbox.x++;
