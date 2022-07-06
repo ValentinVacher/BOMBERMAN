@@ -73,13 +73,13 @@ int play(SDL_Renderer *renderer, Input *in)
         return 1;
     }
 
-    if(create_link(&link, renderer, VERT) != 0)
+    if(create_link(&link, renderer, LINK) != 0)
     {
         destroy_play(texture_arriere_plan, NULL, NULL, texture_mur_destructible, music);
         return 1;
     }
 
-    if(create_link(&link_rouge, renderer, ROUGE) != 0)
+    if(create_link(&link_rouge, renderer, LINK_ROUGE) != 0)
     {
         destroy_play(texture_arriere_plan, &link, NULL, texture_mur_destructible, music);
         return 1;
@@ -159,49 +159,49 @@ int play(SDL_Renderer *renderer, Input *in)
         if(in->key[SDL_SCANCODE_W])   
         {
             deplacer_joueur(&link, HAUT);
-            detecte_map(map, &link, HAUT);
+            detecte_map(map, &link, HAUT, LINK);
         }
 
         if(in->key[SDL_SCANCODE_S])
         {
             deplacer_joueur(&link, BAS);
-            detecte_map(map, &link, BAS);
+            detecte_map(map, &link, BAS, LINK);
         }
 
         if(in->key[SDL_SCANCODE_A])
         {
             deplacer_joueur(&link, GAUCHE);
-            detecte_map(map, &link, GAUCHE);
+            detecte_map(map, &link, GAUCHE, LINK);
         }
 
         if(in->key[SDL_SCANCODE_D])
         {
             deplacer_joueur(&link, DROITE);
-            detecte_map(map, &link, DROITE);
+            detecte_map(map, &link, DROITE, LINK);
         }
 
         if(in->key[SDL_SCANCODE_UP])   
         {
             deplacer_joueur(&link_rouge, HAUT);
-            detecte_map(map, &link_rouge, HAUT);
+            detecte_map(map, &link_rouge, HAUT, LINK_ROUGE);
         }
 
         if(in->key[SDL_SCANCODE_DOWN])
         {
             deplacer_joueur(&link_rouge, BAS);
-            detecte_map(map, &link_rouge, BAS);
+            detecte_map(map, &link_rouge, BAS, LINK_ROUGE);
         }
 
         if(in->key[SDL_SCANCODE_LEFT])
         {
             deplacer_joueur(&link_rouge, GAUCHE);
-            detecte_map(map, &link_rouge, GAUCHE);
+            detecte_map(map, &link_rouge, GAUCHE, LINK_ROUGE);
         }
 
         if(in->key[SDL_SCANCODE_RIGHT])
         {
             deplacer_joueur(&link_rouge, DROITE);
-            detecte_map(map, &link_rouge, DROITE);
+            detecte_map(map, &link_rouge, DROITE, LINK_ROUGE);
         }
 
         limite_fps(frame_limit, 1); 

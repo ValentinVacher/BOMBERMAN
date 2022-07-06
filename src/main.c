@@ -85,6 +85,8 @@ int main(int argc, char *argv[])
                 goto quit;
             }
 
+            Mix_VolumeMusic(MIX_MAX_VOLUME);
+
             texture_menu = load_image("src/images/menu.jpg", renderer);
             if(texture_menu == NULL)
                 goto quit;

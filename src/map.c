@@ -75,7 +75,7 @@ SDL_bool print_wall(Map map[][HAUTEUR], SDL_Renderer *renderer, SDL_Texture *tex
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-void detecte_map(Map map[][HAUTEUR], Link *link, const int direction)
+void detecte_map(Map map[][HAUTEUR], Link *link, const int direction, int joueur)
 {
     int i, j;
 
@@ -84,8 +84,11 @@ void detecte_map(Map map[][HAUTEUR], Link *link, const int direction)
         {
             if(SDL_HasIntersection(&link->hitbox, &map[i][j].coord_case))   
             {
-                if(map[i][j].type == VIDE)
+                if(map[i][j].type == VIDE && joueur == LINK)
                     map[i][j].type = LINK;
+
+                else if(map[i][j].type == VIDE && joueur == LINK_ROUGE)
+                    map[i][j].type = LINK_ROUGE;
 
                 else if(map[i][j].type == MUR_INDESTRUCTIBLE || map[i][j].type == MUR_DESTRUCTIBLE)
                 {
@@ -115,7 +118,7 @@ void detecte_map(Map map[][HAUTEUR], Link *link, const int direction)
                 }
             }
 
-            else if(map[i][j].type == LINK)
+            else if(map[i][j].type == LINK || map[i][j].type == LINK_ROUGE)
                 map[i][j].type = VIDE;
         } 
 }

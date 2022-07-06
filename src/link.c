@@ -16,7 +16,7 @@ void free_link(SDL_Texture *link[])
 
 int create_link(Link *link, SDL_Renderer *renderer, int joueur)
 {
-    if(joueur == VERT)
+    if(joueur == LINK)
     {
         link->direction[HAUT] = load_image("src/images/link_dos.png", renderer);
         link->direction[BAS] = load_image("src/images/link_face.png", renderer);
@@ -30,7 +30,7 @@ int create_link(Link *link, SDL_Renderer *renderer, int joueur)
         link->hitbox.y = 25;
     }
 
-    else if(joueur == ROUGE)  
+    else if(joueur == LINK_ROUGE)  
     {
         link->direction[HAUT] = load_image("src/images/link_dos_rouge.png", renderer);
         link->direction[BAS] = load_image("src/images/link_face_rouge.png", renderer);
