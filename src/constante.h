@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <pthread.h>
+#include <unistd.h>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
@@ -62,6 +64,13 @@ typedef struct Map
     SDL_Rect coord_case;
     int type;
 }Map;
+
+typedef struct Liste
+{
+    Map map[LARGEUR][HAUTEUR];
+    SDL_Renderer *renderer;
+}Liste;
+
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 

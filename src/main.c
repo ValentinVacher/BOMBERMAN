@@ -1,7 +1,7 @@
 #include "constante.h"
 #include "appel.h"
 
-//gcc .\src\*.c -o .\bin\main -I include -L .\lib\ -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer
+//gcc .\src\*.c -o .\bin\main -I include -L .\lib\ -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lpthread
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -71,6 +71,9 @@ int main(int argc, char *argv[])
 
             if(play(renderer, &in))
                 goto quit;
+
+            music_changement = 0;
+            debut = SDL_GetTicks();
 
             music = Mix_LoadMUS("src/musiques/intro_musique_menu.mp3");
             if(music == NULL)

@@ -204,6 +204,9 @@ int play(SDL_Renderer *renderer, Input *in)
             detecte_map(map, &link_rouge, DROITE, LINK_ROUGE);
         }
 
+        if(in->key[SDL_SCANCODE_SPACE])
+            creation_bonmbe();
+
         limite_fps(frame_limit, 1); 
     } 
 
