@@ -39,7 +39,8 @@ enum
     LINK,//2
     MUR_DESTRUCTIBLE,//3
     VIDE_CONSTANT,//4
-    LINK_ROUGE//5
+    LINK_ROUGE,//5
+    BOMBE//6
 };
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -56,7 +57,9 @@ typedef struct Input
 typedef struct Link
 {
     SDL_Texture *direction[4], *direction_actuel;
-    SDL_Rect forme, hitbox;
+    SDL_Rect forme, hitbox, position_link;
+    int nb_bombe, nb_bombe_max;
+    SDL_Rect position_bombe;
 }Link;
 
 typedef struct Map
@@ -65,11 +68,12 @@ typedef struct Map
     int type;
 }Map;
 
-typedef struct Liste
+typedef struct Bombe
 {
     Map map[LARGEUR][HAUTEUR];
+    Link *link;
     SDL_Renderer *renderer;
-}Liste;
+}Bombe;
 
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/

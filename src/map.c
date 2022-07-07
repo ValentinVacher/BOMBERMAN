@@ -75,22 +75,32 @@ SDL_bool print_wall(Map map[][HAUTEUR], SDL_Renderer *renderer, SDL_Texture *tex
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
+SDL_bool pose_bombe(SDL_Texture *texture_bombe, SDL_Renderer *renderer, Link *link)
+{
+
+    if(link->nb_bombe == 1)
+        if(SDL_RenderCopy(renderer, texture_bombe, NULL, &link->position_bombe) != 0)
+            {
+                SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
+                return SDL_FALSE;
+            }
+
+    return SDL_TRUE;
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
 void detecte_map(Map map[][HAUTEUR], Link *link, const int direction, int joueur)
 {
     int i, j;
+    SDL_Rect test_hitbox;
 
     for(i = 0 ; i < LARGEUR ; i++)
         for(j = 0 ; j < HAUTEUR ; j++)
         {
-            if(SDL_HasIntersection(&link->hitbox, &map[i][j].coord_case))   
-            {
-                if(map[i][j].type == VIDE && joueur == LINK)
-                    map[i][j].type = LINK;
-
-                else if(map[i][j].type == VIDE && joueur == LINK_ROUGE)
-                    map[i][j].type = LINK_ROUGE;
-
-                else if(map[i][j].type == MUR_INDESTRUCTIBLE || map[i][j].type == MUR_DESTRUCTIBLE)
+            if(SDL_IntersectRect(&link->hitbox, &map[i][j].coord_case, &test_hitbox))   
+            {   
+                if(map[i][j].type == MUR_INDESTRUCTIBLE || map[i][j].type == MUR_DESTRUCTIBLE)
                 {
                     if(direction == HAUT)
                     {
@@ -116,61 +126,20 @@ void detecte_map(Map map[][HAUTEUR], Link *link, const int direction, int joueur
                         link->hitbox.x--;
                     }
                 }
+
+                else if(test_hitbox.w * test_hitbox.h > 4200)
+                {
+                    link->position_link = map[i][j].coord_case;
+
+                    if(joueur == LINK)
+                        map[i][j].type = LINK;
+
+                    else if(joueur == LINK_ROUGE)
+                        map[i][j].type = LINK_ROUGE;
+                }
             }
 
             else if(map[i][j].type == LINK || map[i][j].type == LINK_ROUGE)
                 map[i][j].type = VIDE;
         } 
-}
-
-/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-
-void deplacer_joueur(Link *link, const int direction)
-{
-    link->direction_actuel = link->direction[direction];
-
-    if(direction == HAUT && link->hitbox.y > MUR_HAUTEUR)
-    {
-        link->forme.y--;
-        link->hitbox.y--;
-    }
-
-    if(direction == BAS && (link->hitbox.y + link->hitbox.h) < HAUTEUR_WINDOW - MUR_HAUTEUR)
-    {
-        link->forme.y++;
-        link->hitbox.y++;
-    }
-
-    if(direction == GAUCHE && link->hitbox.x > MUR_LARGEUR)
-    {
-        link->forme.x--;
-        link->hitbox.x--;
-    }
-
-    if(direction == DROITE && (link->hitbox.x + link->hitbox.w) < LARGEUR_WINDOW - MUR_LARGEUR)
-    {
-        link->forme.x++;
-        link->hitbox.x++;
-    }
-} 
-
-/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-
-void creation_bonmbe()
-{
-    pthread_t thread_1;
-
-    if(pthread_create(&thread_1, NULL, gestion_bombe, NULL) != 0)
-        SDL_Log("ERREUR : GESTION_BOMBE > %s\n",SDL_GetError());
-}
-
-/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-
-void *gestion_bombe(void *arg)
-{
-    printf("BOMBE_POSER\n");
-    sleep(1);
-    printf("BOMBE_EXPLOSER\n");
-
-    pthread_exit(NULL);
 }

@@ -14,7 +14,7 @@ void free_link(SDL_Texture *link[])
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-int create_link(Link *link, SDL_Renderer *renderer, int joueur)
+SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur)
 {
     if(joueur == LINK)
     {
@@ -48,7 +48,7 @@ int create_link(Link *link, SDL_Renderer *renderer, int joueur)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n",SDL_GetError());
         free_link(link->direction);
-        return -1;
+        return SDL_FALSE;
     }
 
     
@@ -56,7 +56,7 @@ int create_link(Link *link, SDL_Renderer *renderer, int joueur)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n",SDL_GetError());
         free_link(link->direction);
-        return -1;
+        return SDL_FALSE;
     }
     
     
@@ -64,7 +64,7 @@ int create_link(Link *link, SDL_Renderer *renderer, int joueur)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n",SDL_GetError());
         free_link(link->direction);
-        return -1;
+        return SDL_FALSE;
     }
 
    
@@ -72,7 +72,7 @@ int create_link(Link *link, SDL_Renderer *renderer, int joueur)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n",SDL_GetError());
         free_link(link->direction);
-        return -1;
+        return SDL_FALSE;
     }
 
     link->hitbox.w = 80;
@@ -80,5 +80,66 @@ int create_link(Link *link, SDL_Renderer *renderer, int joueur)
 
     link->direction_actuel = link->direction[BAS];
 
-    return 0;
+    link->nb_bombe_max = 1;
+    link->nb_bombe = 0;
+
+    return SDL_TRUE;
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+void deplacer_joueur(Link *link, const int direction)
+{
+    link->direction_actuel = link->direction[direction];
+
+    if(direction == HAUT && link->hitbox.y > MUR_HAUTEUR)
+    {
+        link->forme.y--;
+        link->hitbox.y--;
+    }
+
+    if(direction == BAS && (link->hitbox.y + link->hitbox.h) < HAUTEUR_WINDOW - MUR_HAUTEUR)
+    {
+        link->forme.y++;
+        link->hitbox.y++;
+    }
+
+    if(direction == GAUCHE && link->hitbox.x > MUR_LARGEUR)
+    {
+        link->forme.x--;
+        link->hitbox.x--;
+    }
+
+    if(direction == DROITE && (link->hitbox.x + link->hitbox.w) < LARGEUR_WINDOW - MUR_LARGEUR)
+    {
+        link->forme.x++;
+        link->hitbox.x++;
+    }
+} 
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+void creation_bombe(Link *link, pthread_t *thread)
+{
+    if(link->nb_bombe == 0)
+    {
+        if(pthread_create(thread, NULL, gestion_bombe, link) != 0)
+            SDL_Log("ERREUR : GESTION_BOMBE > %s\n",SDL_GetError());
+
+        link->position_bombe = link->position_link;
+        link->nb_bombe++;
+    }
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+void *gestion_bombe(void *arg)
+{
+    Link *link = (Link*)arg;
+
+    sleep(3);
+
+    link->nb_bombe--;
+
+    pthread_exit(NULL);
 }

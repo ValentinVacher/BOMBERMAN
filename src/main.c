@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
             Mix_FreeMusic(music);
             SDL_DestroyTexture(texture_menu);
 
-            if(play(renderer, &in))
+            if(!play(renderer, &in))
                 goto quit;
 
             music_changement = 0;
