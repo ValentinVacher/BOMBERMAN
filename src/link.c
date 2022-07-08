@@ -28,6 +28,9 @@ SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur)
 
         link->hitbox.x = 140;
         link->hitbox.y = 25;
+
+        link->i = 0;
+        link->j = 0;
     }
 
     else if(joueur == LINK_ROUGE)  
@@ -83,6 +86,8 @@ SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur)
     link->nb_bombe_max = 1;
     link->nb_bombe = 0;
 
+    link->bombe.explosion = SDL_FALSE;
+
     return SDL_TRUE;
 }
 
@@ -126,7 +131,8 @@ void creation_bombe(Link *link, pthread_t *thread)
         if(pthread_create(thread, NULL, gestion_bombe, link) != 0)
             SDL_Log("ERREUR : GESTION_BOMBE > %s\n",SDL_GetError());
 
-        link->position_bombe = link->position_link;
+        link->bombe.i = link->i;
+        link->bombe.j = link->j;
         link->nb_bombe++;
     }
 }
@@ -140,6 +146,7 @@ void *gestion_bombe(void *arg)
     sleep(3);
 
     link->nb_bombe--;
+    link->bombe.explosion = SDL_TRUE;
 
     pthread_exit(NULL);
 }

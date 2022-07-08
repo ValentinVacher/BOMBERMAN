@@ -54,12 +54,19 @@ typedef struct Input
     SDL_bool mouse[6];
 }Input;
 
+typedef struct Bombe
+{
+    SDL_Rect position_bombe;
+    int i,j;
+    SDL_bool explosion;
+}Bombe;
+
 typedef struct Link
 {
     SDL_Texture *direction[4], *direction_actuel;
-    SDL_Rect forme, hitbox, position_link;
-    int nb_bombe, nb_bombe_max;
-    SDL_Rect position_bombe;
+    SDL_Rect forme, hitbox;
+    int nb_bombe, nb_bombe_max, i,j;
+    Bombe bombe;
 }Link;
 
 typedef struct Map
@@ -67,14 +74,6 @@ typedef struct Map
     SDL_Rect coord_case;
     int type;
 }Map;
-
-typedef struct Bombe
-{
-    Map map[LARGEUR][HAUTEUR];
-    Link *link;
-    SDL_Renderer *renderer;
-}Bombe;
-
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 

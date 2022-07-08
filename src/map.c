@@ -75,15 +75,33 @@ SDL_bool print_wall(Map map[][HAUTEUR], SDL_Renderer *renderer, SDL_Texture *tex
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-SDL_bool pose_bombe(SDL_Texture *texture_bombe, SDL_Renderer *renderer, Link *link)
+SDL_bool pose_bombe(SDL_Texture *texture_bombe, SDL_Renderer *renderer, Link *link, Map map[][HAUTEUR])
 {
-
     if(link->nb_bombe == 1)
-        if(SDL_RenderCopy(renderer, texture_bombe, NULL, &link->position_bombe) != 0)
+    {
+        if(SDL_RenderCopy(renderer, texture_bombe, NULL, &map[link->bombe.i][link->bombe.j].coord_case) != 0)
             {
                 SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
                 return SDL_FALSE;
             }
+        map[link->bombe.i][link->bombe.j].type = BOMBE;
+    }
+    if(link->bombe.explosion)
+    {
+        if(map[link->bombe.i + 1][link->bombe.j].type == MUR_DESTRUCTIBLE && link->bombe.i + 1 < LARGEUR)
+            map[link->bombe.i + 1][link->bombe.j].type = VIDE;
+        
+        if(map[link->bombe.i - 1][link->bombe.j].type == MUR_DESTRUCTIBLE && link->bombe.i - 1 >= 0)
+            map[link->bombe.i - 1][link->bombe.j].type = VIDE;
+
+        if(map[link->bombe.i][link->bombe.j + 1].type == MUR_DESTRUCTIBLE && link->bombe.j + 1 < HAUTEUR)
+            map[link->bombe.i][link->bombe.j + 1].type = VIDE;
+
+        if(map[link->bombe.i][link->bombe.j - 1].type == MUR_DESTRUCTIBLE && link->bombe.j - 1 >= 0)
+            map[link->bombe.i][link->bombe.j - 1].type = VIDE;
+        
+        link->bombe.explosion = SDL_FALSE;
+    }
 
     return SDL_TRUE;
 }
@@ -129,7 +147,8 @@ void detecte_map(Map map[][HAUTEUR], Link *link, const int direction, int joueur
 
                 else if(test_hitbox.w * test_hitbox.h > 4200)
                 {
-                    link->position_link = map[i][j].coord_case;
+                    link->i = i;
+                    link->j = j;
 
                     if(joueur == LINK)
                         map[i][j].type = LINK;
