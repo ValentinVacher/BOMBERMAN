@@ -10,7 +10,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in);
 void create_map(Map map[][HAUTEUR]);
 SDL_bool print_wall(Map map[][HAUTEUR], SDL_Renderer *renderer, SDL_Texture *texture_mur_destructible);
 void detecte_map(Map map[][HAUTEUR], Link *link, const int direction, int joueur);
-SDL_bool pose_bombe(SDL_Texture *texture_bombe, SDL_Renderer *renderer, Link *linkk, Map map[][HAUTEUR]);
+SDL_bool pose_bombe(SDL_Texture *texture_bombe, SDL_Renderer *renderer, Link *link, Map map[][HAUTEUR], SDL_Texture *texture_explosion);
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 

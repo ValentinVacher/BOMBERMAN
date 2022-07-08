@@ -75,18 +75,18 @@ SDL_bool print_wall(Map map[][HAUTEUR], SDL_Renderer *renderer, SDL_Texture *tex
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-SDL_bool pose_bombe(SDL_Texture *texture_bombe, SDL_Renderer *renderer, Link *link, Map map[][HAUTEUR])
+SDL_bool pose_bombe(SDL_Texture *texture_bombe, SDL_Renderer *renderer, Link *link, Map map[][HAUTEUR], SDL_Texture *texture_explosion)
 {
-    if(link->nb_bombe == 1)
+    if(link->nb_bombe == 1 && link->bombe.explosion == 0)
     {
         if(SDL_RenderCopy(renderer, texture_bombe, NULL, &map[link->bombe.i][link->bombe.j].coord_case) != 0)
-            {
-                SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
-                return SDL_FALSE;
-            }
-        map[link->bombe.i][link->bombe.j].type = BOMBE;
+        {
+            SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
+            return SDL_FALSE;
+        }
     }
-    if(link->bombe.explosion)
+
+    else if(link->bombe.explosion == 1)
     {
         if(map[link->bombe.i + 1][link->bombe.j].type == MUR_DESTRUCTIBLE && link->bombe.i + 1 < LARGEUR)
             map[link->bombe.i + 1][link->bombe.j].type = VIDE;
@@ -100,7 +100,16 @@ SDL_bool pose_bombe(SDL_Texture *texture_bombe, SDL_Renderer *renderer, Link *li
         if(map[link->bombe.i][link->bombe.j - 1].type == MUR_DESTRUCTIBLE && link->bombe.j - 1 >= 0)
             map[link->bombe.i][link->bombe.j - 1].type = VIDE;
         
-        link->bombe.explosion = SDL_FALSE;
+        link->bombe.explosion++;
+    }
+
+    if(link->bombe.explosion == 2)
+    {
+        if(SDL_RenderCopy(renderer, texture_explosion, NULL, &map[link->bombe.i][link->bombe.j].coord_case) != 0)
+        {
+            SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
+            return SDL_FALSE;
+        }
     }
 
     return SDL_TRUE;
