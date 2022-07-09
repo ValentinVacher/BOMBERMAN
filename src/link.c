@@ -86,7 +86,7 @@ SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur)
     link->nb_bombe_max = 1;
     link->nb_bombe = 0;
 
-    link->bombe.explosion = 0;
+    link->bombe.explosion = BOMBE;
 
     return SDL_TRUE;
 }
@@ -143,14 +143,42 @@ void *gestion_bombe(void *arg)
 {
     Link *link = (Link*)arg;
 
-    sleep(2);
+    sleep(1);
 
-    link->bombe.explosion++;
+    link->bombe.explosion = BOMBE_ROUGE;
+
+    usleep(300000);
+
+    link->bombe.explosion = BOMBE;
+
+    usleep(200000);
+
+    link->bombe.explosion = BOMBE_ROUGE;
+
+    usleep(100000);
+
+    link->bombe.explosion = BOMBE;
+
+    usleep(100000);
+
+    link->bombe.explosion = BOMBE_ROUGE;
+
+    usleep(100000);
+
+    link->bombe.explosion = BOMBE;
+
+    usleep(100000);
+
+    link->bombe.explosion = BOMBE_ROUGE;
+
+    usleep(100000);
+
+    link->bombe.explosion = DESTRUCTION;
 
     sleep(1);
 
-    link->bombe.explosion = 0;
     link->nb_bombe--;
-
+    link->bombe.explosion = BOMBE;
+    
     pthread_exit(NULL);
 }

@@ -75,18 +75,27 @@ SDL_bool print_wall(Map map[][HAUTEUR], SDL_Renderer *renderer, SDL_Texture *tex
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-SDL_bool pose_bombe(SDL_Texture *texture_bombe, SDL_Renderer *renderer, Link *link, Map map[][HAUTEUR], SDL_Texture *texture_explosion)
+SDL_bool pose_bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *link, Map map[][HAUTEUR])
 {
-    if(link->nb_bombe == 1 && link->bombe.explosion == 0)
+    if(link->nb_bombe == 1 && link->bombe.explosion == BOMBE)
     {
-        if(SDL_RenderCopy(renderer, texture_bombe, NULL, &map[link->bombe.i][link->bombe.j].coord_case) != 0)
+        if(SDL_RenderCopy(renderer, texture_bombe[0], NULL, &map[link->bombe.i][link->bombe.j].coord_case) != 0)
         {
             SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
             return SDL_FALSE;
         }
     }
 
-    else if(link->bombe.explosion == 1)
+    else if (link->bombe.explosion == BOMBE_ROUGE)
+    {
+        if(SDL_RenderCopy(renderer, texture_bombe[3], NULL, &map[link->bombe.i][link->bombe.j].coord_case) != 0)
+        {
+            SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
+            return SDL_FALSE;
+        }
+    }
+    
+    else if(link->bombe.explosion == DESTRUCTION)
     {
         if(map[link->bombe.i + 1][link->bombe.j].type == MUR_DESTRUCTIBLE && link->bombe.i + 1 < LARGEUR)
             map[link->bombe.i + 1][link->bombe.j].type = VIDE;
@@ -100,12 +109,12 @@ SDL_bool pose_bombe(SDL_Texture *texture_bombe, SDL_Renderer *renderer, Link *li
         if(map[link->bombe.i][link->bombe.j - 1].type == MUR_DESTRUCTIBLE && link->bombe.j - 1 >= 0)
             map[link->bombe.i][link->bombe.j - 1].type = VIDE;
         
-        link->bombe.explosion++;
+        link->bombe.explosion = EXPLOSION;
     }
 
-    if(link->bombe.explosion == 2)
+    if(link->bombe.explosion == EXPLOSION)
     {
-        if(SDL_RenderCopy(renderer, texture_explosion, NULL, &map[link->bombe.i][link->bombe.j].coord_case) != 0)
+        if(SDL_RenderCopy(renderer, texture_bombe[1], NULL, &map[link->bombe.i][link->bombe.j].coord_case) != 0)
         {
             SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
             return SDL_FALSE;

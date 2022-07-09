@@ -10,8 +10,8 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
 
     SDL_Event event;
     SDL_bool game_launched = SDL_TRUE, space = SDL_FALSE, rctrl = SDL_FALSE, exite = SDL_FALSE;
-    SDL_Texture *texture_arriere_plan = NULL, *texture_mur_destructible = NULL, *texture_bombe = NULL, *texture_explosion = NULL;
-    int debut = SDL_GetTicks(), music_changement = 0;
+    SDL_Texture *texture_arriere_plan = NULL, *texture_mur_destructible = NULL, *texture_bombe[3];
+    int debut = SDL_GetTicks(), music_changement = 0, i = 0;
     Mix_Music *music;
     Link link, link_rouge;
     Map map[LARGEUR][HAUTEUR];
@@ -43,15 +43,22 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
         goto quit;
     }
 
-    texture_bombe = load_image("src/images/bombe.png", renderer);
-    if(texture_bombe == NULL)
+    texture_bombe[0] = load_image("src/images/bombe.png", renderer);
+    if(texture_bombe[0] == NULL)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n", SDL_GetError());
         goto quit;
     }
 
-    texture_explosion = load_image("src/images/explosion.png", renderer);
-    if(texture_bombe == NULL)
+    texture_bombe[1] = load_image("src/images/explosion.png", renderer);
+    if(texture_bombe[1] == NULL)
+    {
+        SDL_Log("ERREUR : CREATE_TEXTURE > %s\n", SDL_GetError());
+        goto quit;
+    }
+
+    texture_bombe[3] = load_image("src/images/bombe_rouge.png", renderer);
+    if(texture_bombe[3] == NULL)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n", SDL_GetError());
         goto quit;
@@ -113,10 +120,10 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
         if(!print_wall(map, renderer, texture_mur_destructible))
             goto quit;
 
-        if(!pose_bombe(texture_bombe, renderer, &link, map, texture_explosion))
+        if(!pose_bombe(texture_bombe, renderer, &link, map))
             goto quit;
 
-        if(!pose_bombe(texture_bombe, renderer, &link_rouge, map, texture_explosion))
+        if(!pose_bombe(texture_bombe, renderer, &link_rouge, map))
             goto quit;
 
         if(SDL_RenderCopy(renderer, link.direction_actuel, NULL, &link.forme) != 0)
@@ -228,12 +235,10 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
         SDL_DestroyTexture(link_rouge.direction_actuel);
         free_link(link_rouge.direction);
     }
-    
-    if(texture_explosion != NULL)
-        SDL_DestroyTexture(texture_explosion);
 
-    if(texture_bombe != NULL)
-        SDL_DestroyTexture(texture_bombe);
+    for(i = 0 ; i < 3 ; i++)
+        if(texture_bombe[i] != NULL)
+            SDL_DestroyTexture(texture_bombe[i]);
 
     if(texture_mur_destructible != NULL)
         SDL_DestroyTexture(texture_mur_destructible);

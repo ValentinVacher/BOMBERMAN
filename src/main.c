@@ -1,7 +1,7 @@
 #include "constante.h"
 #include "appel.h"
 
-//gcc .\src\*.c -o .\bin\main -I include -L .\lib\ -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lpthread
+//gcc .\src\*.c -o .\bin\bomberman -I include -L .\lib\ -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lpthread
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
