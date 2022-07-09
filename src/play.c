@@ -13,6 +13,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
     SDL_Texture *texture_arriere_plan = NULL, *texture_mur_destructible = NULL, *texture_bombe[3];
     int debut = SDL_GetTicks(), music_changement = 0, i = 0;
     Mix_Music *music;
+    Mix_Chunk *explosion;
     Link link, link_rouge;
     Map map[LARGEUR][HAUTEUR];
     unsigned int frame_limit = 0; 
@@ -22,12 +23,23 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
 
     create_map(map);
 
+    Mix_AllocateChannels(2);
+
     music = music = Mix_LoadMUS("src/musiques/intro_musique_jeu.mp3");
     if(music == NULL)
     {
         SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
         return exite;
     }
+
+    explosion = Mix_LoadWAV("src/musiques/explosion.mp3");
+    if(explosion == NULL)
+    {
+        SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
+        return exite;
+    }
+
+    Mix_VolumeChunk(explosion, MIX_MAX_VOLUME / 2);
 
     texture_arriere_plan = load_image("src/images/map.jpg", renderer);
     if(texture_arriere_plan == NULL)
@@ -120,10 +132,10 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
         if(!print_wall(map, renderer, texture_mur_destructible))
             goto quit;
 
-        if(!pose_bombe(texture_bombe, renderer, &link, map))
+        if(!pose_bombe(texture_bombe, renderer, &link, map, explosion))
             goto quit;
 
-        if(!pose_bombe(texture_bombe, renderer, &link_rouge, map))
+        if(!pose_bombe(texture_bombe, renderer, &link_rouge, map, explosion))
             goto quit;
 
         if(SDL_RenderCopy(renderer, link.direction_actuel, NULL, &link.forme) != 0)
@@ -223,6 +235,9 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
 
     if(music != NULL)   
         Mix_FreeMusic(music);
+
+    if(explosion != NULL)
+        Mix_FreeChunk(explosion);
 
     if(link.direction_actuel != NULL)
     {

@@ -75,7 +75,7 @@ SDL_bool print_wall(Map map[][HAUTEUR], SDL_Renderer *renderer, SDL_Texture *tex
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-SDL_bool pose_bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *link, Map map[][HAUTEUR])
+SDL_bool pose_bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *link, Map map[][HAUTEUR], Mix_Chunk *explosion)
 {
     if(link->nb_bombe == 1 && link->bombe.explosion == BOMBE)
     {
@@ -119,6 +119,12 @@ SDL_bool pose_bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *
             SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
             return SDL_FALSE;
         }
+    }
+
+    if(link->bombe.son)
+    {
+        Mix_PlayChannel(-1, explosion, 0);
+        link->bombe.son = SDL_FALSE;
     }
 
     return SDL_TRUE;

@@ -64,6 +64,7 @@ typedef struct Input
 typedef struct Bombe
 {
     int i,j, explosion;
+    SDL_bool son;
 }Bombe;
 
 typedef struct Link
