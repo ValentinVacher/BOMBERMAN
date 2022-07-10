@@ -159,30 +159,30 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
         if(in->key[SDL_SCANCODE_W])   
         {
             deplacer_joueur(&link, HAUT);
-            detecte_map(map, &link, HAUT, LINK);
+            detecte_map(map, &link, &link_rouge, HAUT, LINK);
         }
 
         if(in->key[SDL_SCANCODE_S])
         {
             deplacer_joueur(&link, BAS);
-            detecte_map(map, &link, BAS, LINK);
+            detecte_map(map, &link, &link_rouge, BAS, LINK);
         }
 
         if(in->key[SDL_SCANCODE_A])
         {
             deplacer_joueur(&link, GAUCHE);
-            detecte_map(map, &link, GAUCHE, LINK);
+            detecte_map(map, &link, &link_rouge, GAUCHE, LINK);
         }
 
         if(in->key[SDL_SCANCODE_D])
         {
             deplacer_joueur(&link, DROITE);
-            detecte_map(map, &link, DROITE, LINK);
+            detecte_map(map, &link, &link_rouge, DROITE, LINK);
         }
 
         if(in->key[SDL_SCANCODE_SPACE] && !space)
         {
-            creation_bombe(&link, &thread[0]);
+            creation_bombe(&link, &thread[0], map);
             space = SDL_TRUE;
         }
 
@@ -194,30 +194,30 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
         if(in->key[SDL_SCANCODE_UP])   
         {
             deplacer_joueur(&link_rouge, HAUT);
-            detecte_map(map, &link_rouge, HAUT, LINK_ROUGE);
+            detecte_map(map, &link_rouge, &link, HAUT, LINK_ROUGE);
         }
 
         if(in->key[SDL_SCANCODE_DOWN])
         {
             deplacer_joueur(&link_rouge, BAS);
-            detecte_map(map, &link_rouge, BAS, LINK_ROUGE);
+            detecte_map(map, &link_rouge, &link, BAS, LINK_ROUGE);
         }
 
         if(in->key[SDL_SCANCODE_LEFT])
         {
             deplacer_joueur(&link_rouge, GAUCHE);
-            detecte_map(map, &link_rouge, GAUCHE, LINK_ROUGE);
+            detecte_map(map, &link_rouge, &link, GAUCHE, LINK_ROUGE);
         }
 
         if(in->key[SDL_SCANCODE_RIGHT])
         {
             deplacer_joueur(&link_rouge, DROITE);
-            detecte_map(map, &link_rouge, DROITE, LINK_ROUGE);
+            detecte_map(map, &link_rouge, &link, DROITE, LINK_ROUGE);
         }
 
         if(in->key[SDL_SCANCODE_RCTRL] && !rctrl)
         {
-            creation_bombe(&link_rouge, &thread[1]);
+            creation_bombe(&link_rouge, &thread[1], map);
             rctrl = SDL_TRUE;
         }
 

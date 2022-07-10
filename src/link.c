@@ -31,6 +31,8 @@ SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur)
 
         link->i = 0;
         link->j = 0;
+
+        link->couileur = LINK;
     }
 
     else if(joueur == LINK_ROUGE)  
@@ -45,6 +47,11 @@ SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur)
 
         link->hitbox.x = 140 + 1650 - 90;
         link->hitbox.y = 25 + 1050 - 115;
+
+        link->i = 10;
+        link->j = 6;
+
+        link->couileur = LINK_ROUGE;
     }
 
     if(link->direction[HAUT] == NULL)
@@ -125,13 +132,14 @@ void deplacer_joueur(Link *link, const int direction)
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-void creation_bombe(Link *link, pthread_t *thread)
+void creation_bombe(Link *link, pthread_t *thread, Map map[][HAUTEUR])
 {
-    if(link->nb_bombe == 0)
+    if(link->nb_bombe == 0 && map[link->i][link->j].type != FUTURE_BOMBE)
     {
         if(pthread_create(thread, NULL, gestion_bombe, link) != 0)
             SDL_Log("ERREUR : GESTION_BOMBE > %s\n",SDL_GetError());
 
+        map[link->i][link->j].type = FUTURE_BOMBE;
         link->bombe.i = link->i;
         link->bombe.j = link->j;
         link->nb_bombe++;

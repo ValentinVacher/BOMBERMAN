@@ -119,6 +119,34 @@ SDL_bool pose_bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *
             SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
             return SDL_FALSE;
         }
+
+        if(map[link->bombe.i + 1][link->bombe.j].type != MUR_INDESTRUCTIBLE && link->bombe.i + 1 < LARGEUR)
+            if(SDL_RenderCopy(renderer, texture_bombe[1], NULL, &map[link->bombe.i + 1][link->bombe.j].coord_case) != 0)
+            {
+                SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
+                return SDL_FALSE;
+            }
+        
+        if(map[link->bombe.i - 1][link->bombe.j].type != MUR_INDESTRUCTIBLE && link->bombe.i - 1 >= 0)
+            if(SDL_RenderCopy(renderer, texture_bombe[1], NULL, &map[link->bombe.i - 1][link->bombe.j].coord_case) != 0)
+            {
+                SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
+                return SDL_FALSE;
+            }
+
+        if(map[link->bombe.i][link->bombe.j + 1].type != MUR_INDESTRUCTIBLE && link->bombe.j + 1 < HAUTEUR)
+            if(SDL_RenderCopy(renderer, texture_bombe[1], NULL, &map[link->bombe.i][link->bombe.j + 1].coord_case) != 0)
+            {
+                SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
+                return SDL_FALSE;
+            }
+
+        if(map[link->bombe.i][link->bombe.j - 1].type != MUR_INDESTRUCTIBLE && link->bombe.j - 1 >= 0)
+            if(SDL_RenderCopy(renderer, texture_bombe[1], NULL, &map[link->bombe.i][link->bombe.j - 1].coord_case) != 0)
+            {
+                SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
+                return SDL_FALSE;
+            }
     }
 
     if(link->bombe.son)
@@ -132,7 +160,7 @@ SDL_bool pose_bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-void detecte_map(Map map[][HAUTEUR], Link *link, const int direction, int joueur)
+void detecte_map(Map map[][HAUTEUR], Link *link, Link *link2, const int direction, int joueur)
 {
     int i, j;
     SDL_Rect test_hitbox;
@@ -142,7 +170,7 @@ void detecte_map(Map map[][HAUTEUR], Link *link, const int direction, int joueur
         {
             if(SDL_IntersectRect(&link->hitbox, &map[i][j].coord_case, &test_hitbox))   
             {   
-                if(map[i][j].type == MUR_INDESTRUCTIBLE || map[i][j].type == MUR_DESTRUCTIBLE)
+                if(map[i][j].type == MUR_INDESTRUCTIBLE || map[i][j].type == MUR_DESTRUCTIBLE || map[i][j].type == BOMBE_MAP || SDL_HasIntersection(&link->hitbox, &link2->hitbox))
                 {
                     if(direction == HAUT)
                     {
@@ -169,7 +197,7 @@ void detecte_map(Map map[][HAUTEUR], Link *link, const int direction, int joueur
                     }
                 }
 
-                else if(test_hitbox.w * test_hitbox.h > 4200)
+                else if(test_hitbox.w * test_hitbox.h > 4200 && map[i][j].type != FUTURE_BOMBE)
                 {
                     link->i = i;
                     link->j = j;
@@ -184,5 +212,14 @@ void detecte_map(Map map[][HAUTEUR], Link *link, const int direction, int joueur
 
             else if(map[i][j].type == LINK || map[i][j].type == LINK_ROUGE)
                 map[i][j].type = VIDE;
+
+            if(link->bombe.i == i && link->bombe.j == j)
+            {
+                if(link->nb_bombe == 1 && !SDL_HasIntersection(&link->hitbox, &map[i][j].coord_case) && !SDL_HasIntersection(&link2->hitbox, &map[i][j].coord_case))
+                    map[i][j].type = BOMBE_MAP;
+
+                else if(link->nb_bombe == 0)
+                    map[i][j].type = VIDE;
+            }    
         } 
 }

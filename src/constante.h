@@ -40,6 +40,8 @@ enum
     MUR_DESTRUCTIBLE,//3
     VIDE_CONSTANT,//4
     LINK_ROUGE,//5
+    BOMBE_MAP,//6
+    FUTURE_BOMBE//7
 };
 
 enum
@@ -71,7 +73,7 @@ typedef struct Link
 {
     SDL_Texture *direction[4], *direction_actuel;
     SDL_Rect forme, hitbox;
-    int nb_bombe, nb_bombe_max, i,j;
+    int nb_bombe, nb_bombe_max, i, j, couileur;
     Bombe bombe;
 }Link;
 
