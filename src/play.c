@@ -11,7 +11,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
     SDL_Event event;
     SDL_bool game_launched = SDL_TRUE, space = SDL_FALSE, rctrl = SDL_FALSE, exite = SDL_FALSE;
     SDL_Texture *texture_arriere_plan = NULL, *texture_mur_destructible = NULL, *texture_bombe[3];
-    int debut = SDL_GetTicks(), music_changement = 0, i = 0;
+    int debut = SDL_GetTicks(), music_changement = 0, i = 0, victoire = 0;
     Mix_Music *music;
     Mix_Chunk *explosion;
     Link link, link_rouge;
@@ -98,7 +98,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 
-    while (!in->quit && !in->key[SDL_SCANCODE_ESCAPE])
+    while (!in->quit && !in->key[SDL_SCANCODE_ESCAPE] && victoire == 0)
     {
         frame_limit = SDL_GetTicks() + FPS;
 
@@ -132,10 +132,10 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
         if(!print_wall(map, renderer, texture_mur_destructible))
             goto quit;
 
-        if(!pose_bombe(texture_bombe, renderer, &link, map, explosion))
+        if(!pose_bombe(texture_bombe, renderer, &link, &link_rouge ,map, explosion, &victoire))
             goto quit;
 
-        if(!pose_bombe(texture_bombe, renderer, &link_rouge, map, explosion))
+        if(!pose_bombe(texture_bombe, renderer, &link_rouge, &link ,map, explosion, &victoire))
             goto quit;
 
         if(SDL_RenderCopy(renderer, link.direction_actuel, NULL, &link.forme) != 0)
@@ -228,6 +228,12 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
     } 
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+
+    if(victoire == LINK)
+        printf("Victoire du joueur vert");
+
+    if(victoire == LINK_ROUGE)
+        printf("Victoire du joueur rouge");
 
     exite = SDL_TRUE;
 

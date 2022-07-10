@@ -32,7 +32,7 @@ SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur)
         link->i = 0;
         link->j = 0;
 
-        link->couileur = LINK;
+        link->couleur = LINK;
     }
 
     else if(joueur == LINK_ROUGE)  
@@ -51,7 +51,7 @@ SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur)
         link->i = 10;
         link->j = 6;
 
-        link->couileur = LINK_ROUGE;
+        link->couleur = LINK_ROUGE;
     }
 
     if(link->direction[HAUT] == NULL)

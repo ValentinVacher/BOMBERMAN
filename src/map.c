@@ -75,7 +75,7 @@ SDL_bool print_wall(Map map[][HAUTEUR], SDL_Renderer *renderer, SDL_Texture *tex
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-SDL_bool pose_bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *link, Map map[][HAUTEUR], Mix_Chunk *explosion)
+SDL_bool pose_bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *link, Link *link2, Map map[][HAUTEUR], Mix_Chunk *explosion, int *victoire)
 {
     if(link->nb_bombe == 1 && link->bombe.explosion == BOMBE)
     {
@@ -120,33 +120,71 @@ SDL_bool pose_bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *
             return SDL_FALSE;
         }
 
+        if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i][link->bombe.j].coord_case))
+            *victoire = link2->couleur;
+
+        if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i][link->bombe.j].coord_case))
+            *victoire = link->couleur;
+
         if(map[link->bombe.i + 1][link->bombe.j].type != MUR_INDESTRUCTIBLE && link->bombe.i + 1 < LARGEUR)
+        {
             if(SDL_RenderCopy(renderer, texture_bombe[1], NULL, &map[link->bombe.i + 1][link->bombe.j].coord_case) != 0)
             {
                 SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
                 return SDL_FALSE;
             }
+
+            if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i + 1][link->bombe.j].coord_case))
+                *victoire = link2->couleur;
+
+            if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i + 1][link->bombe.j].coord_case))
+                *victoire = link->couleur;
+        }
         
         if(map[link->bombe.i - 1][link->bombe.j].type != MUR_INDESTRUCTIBLE && link->bombe.i - 1 >= 0)
+        {
             if(SDL_RenderCopy(renderer, texture_bombe[1], NULL, &map[link->bombe.i - 1][link->bombe.j].coord_case) != 0)
             {
                 SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
                 return SDL_FALSE;
             }
 
+            if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i - 1][link->bombe.j].coord_case))
+                *victoire = link2->couleur;
+
+            if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i - 1][link->bombe.j].coord_case))
+                *victoire = link->couleur;
+        }
+
         if(map[link->bombe.i][link->bombe.j + 1].type != MUR_INDESTRUCTIBLE && link->bombe.j + 1 < HAUTEUR)
+        {
             if(SDL_RenderCopy(renderer, texture_bombe[1], NULL, &map[link->bombe.i][link->bombe.j + 1].coord_case) != 0)
             {
                 SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
                 return SDL_FALSE;
             }
 
+            if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i][link->bombe.j + 1].coord_case))
+                *victoire = link2->couleur;
+
+            if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i][link->bombe.j + 1].coord_case))
+                *victoire = link->couleur;
+        }
+
         if(map[link->bombe.i][link->bombe.j - 1].type != MUR_INDESTRUCTIBLE && link->bombe.j - 1 >= 0)
+        {
             if(SDL_RenderCopy(renderer, texture_bombe[1], NULL, &map[link->bombe.i][link->bombe.j - 1].coord_case) != 0)
             {
                 SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
                 return SDL_FALSE;
             }
+
+            if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i][link->bombe.j - 1].coord_case))
+                *victoire = link2->couleur;
+
+            if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i][link->bombe.j - 1].coord_case))
+                *victoire = link->couleur;
+        }
     }
 
     if(link->bombe.son)

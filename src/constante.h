@@ -73,7 +73,7 @@ typedef struct Link
 {
     SDL_Texture *direction[4], *direction_actuel;
     SDL_Rect forme, hitbox;
-    int nb_bombe, nb_bombe_max, i, j, couileur;
+    int nb_bombe, nb_bombe_max, i, j, couleur;
     Bombe bombe;
 }Link;
 
