@@ -7,8 +7,8 @@ void create_map(Map map[][HAUTEUR])
 {
     int i, j, nb_block = 0, compteur = 2;
 
-    printf("SEED : %d\n",time(NULL));
-    srand(time(NULL));
+    printf("SEED : %d\n",1657540863);
+    srand(1657540863);
 
     map[0][0].type = LINK;
     map[1][0].type = VIDE_CONSTANT;
@@ -108,6 +108,40 @@ SDL_bool pose_bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *
 
         if(map[link->bombe.i][link->bombe.j - 1].type == MUR_DESTRUCTIBLE && link->bombe.j - 1 >= 0)
             map[link->bombe.i][link->bombe.j - 1].type = VIDE;
+
+        if(*victoire == 0)
+        {
+            if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i][link->bombe.j].coord_case))
+                *victoire = link2->couleur;
+
+            else if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i][link->bombe.j].coord_case))
+                *victoire = link->couleur;
+
+            else if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i + 1][link->bombe.j].coord_case))
+                *victoire = link2->couleur;
+
+            else if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i + 1][link->bombe.j].coord_case))
+                *victoire = link->couleur;
+
+            else if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i - 1][link->bombe.j].coord_case))
+                    *victoire = link2->couleur;
+
+            else if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i - 1][link->bombe.j].coord_case))
+                *victoire = link->couleur;
+
+            else if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i][link->bombe.j + 1].coord_case))
+                *victoire = link2->couleur;
+
+            else if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i][link->bombe.j + 1].coord_case))
+                *victoire = link->couleur;
+
+            else if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i][link->bombe.j - 1].coord_case))
+                *victoire = link2->couleur;
+
+            else if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i][link->bombe.j - 1].coord_case))
+                *victoire = link->couleur;
+        }
+
         
         link->bombe.explosion = EXPLOSION;
     }
@@ -120,12 +154,6 @@ SDL_bool pose_bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *
             return SDL_FALSE;
         }
 
-        if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i][link->bombe.j].coord_case))
-            *victoire = link2->couleur;
-
-        if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i][link->bombe.j].coord_case))
-            *victoire = link->couleur;
-
         if(map[link->bombe.i + 1][link->bombe.j].type != MUR_INDESTRUCTIBLE && link->bombe.i + 1 < LARGEUR)
         {
             if(SDL_RenderCopy(renderer, texture_bombe[1], NULL, &map[link->bombe.i + 1][link->bombe.j].coord_case) != 0)
@@ -133,12 +161,6 @@ SDL_bool pose_bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *
                 SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
                 return SDL_FALSE;
             }
-
-            if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i + 1][link->bombe.j].coord_case))
-                *victoire = link2->couleur;
-
-            if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i + 1][link->bombe.j].coord_case))
-                *victoire = link->couleur;
         }
         
         if(map[link->bombe.i - 1][link->bombe.j].type != MUR_INDESTRUCTIBLE && link->bombe.i - 1 >= 0)
@@ -148,12 +170,6 @@ SDL_bool pose_bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *
                 SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
                 return SDL_FALSE;
             }
-
-            if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i - 1][link->bombe.j].coord_case))
-                *victoire = link2->couleur;
-
-            if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i - 1][link->bombe.j].coord_case))
-                *victoire = link->couleur;
         }
 
         if(map[link->bombe.i][link->bombe.j + 1].type != MUR_INDESTRUCTIBLE && link->bombe.j + 1 < HAUTEUR)
@@ -162,13 +178,7 @@ SDL_bool pose_bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *
             {
                 SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
                 return SDL_FALSE;
-            }
-
-            if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i][link->bombe.j + 1].coord_case))
-                *victoire = link2->couleur;
-
-            if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i][link->bombe.j + 1].coord_case))
-                *victoire = link->couleur;
+            }   
         }
 
         if(map[link->bombe.i][link->bombe.j - 1].type != MUR_INDESTRUCTIBLE && link->bombe.j - 1 >= 0)
@@ -178,12 +188,6 @@ SDL_bool pose_bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *
                 SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
                 return SDL_FALSE;
             }
-
-            if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i][link->bombe.j - 1].coord_case))
-                *victoire = link2->couleur;
-
-            if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i][link->bombe.j - 1].coord_case))
-                *victoire = link->couleur;
         }
     }
 
@@ -258,6 +262,9 @@ void detecte_map(Map map[][HAUTEUR], Link *link, Link *link2, const int directio
 
                 else if(link->nb_bombe == 0)
                     map[i][j].type = VIDE;
-            }    
+            }
+
+            else if(map[i][j].type == BOMBE_MAP) 
+                map[i][j].type = VIDE;
         } 
 }

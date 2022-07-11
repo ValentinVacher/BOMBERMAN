@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     unsigned int frame_limit = 0;
     int statut = EXIT_FAILURE;
     int debut = 0;
-    int music_changement = 0;
+    int music_changement = 0, rejouer = 0;
 
     memset(&in, SDL_FALSE, sizeof(Input));
 
