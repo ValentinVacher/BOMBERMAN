@@ -23,7 +23,7 @@ void *gestion_bombe(void *arg);
 
 int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h);
 SDL_Texture *load_image(const char path[], SDL_Renderer *renderer);
-int change_music(const int debut, const int duree, int *music_changement, const char path[], Mix_Music *music);
+int change_music(const int debut, const int duree, int *music_changement, const char path[], Mix_Music *music, int nb_changement);
 void limite_fps(unsigned int limit, int limite_fps);
 void update_event(Input *in);
 

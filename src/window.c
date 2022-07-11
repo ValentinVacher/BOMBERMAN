@@ -50,9 +50,9 @@ SDL_Texture *load_image(const char path[], SDL_Renderer *renderer)
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-int change_music(const int debut, const int duree, int *music_changement, const char path[], Mix_Music *music)
+int change_music(const int debut, const int duree, int *music_changement, const char path[], Mix_Music *music, int nb_changement)
 {
-    if(SDL_GetTicks() - debut >= duree && *music_changement == 0)
+    if(SDL_GetTicks() - debut >= duree && *music_changement == nb_changement)
     {
         music = Mix_LoadMUS(path);
         if(music == NULL)

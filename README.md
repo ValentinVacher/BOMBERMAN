@@ -5,7 +5,7 @@ Mon objectif est d'apprendre la programmation en C et à utiliser la bibliothèq
 <br/>
 ### CONTRÔLE :
 
-ENTREE : lancer le jeu
+ENTREE : lancer et relancer le jeu
 <br/>
 ECHAP : retour au menu
 <br/>

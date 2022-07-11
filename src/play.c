@@ -23,7 +23,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
 
     Mix_AllocateChannels(2);
 
-    music = music = Mix_LoadMUS("src/musiques/intro_musique_jeu.mp3");
+    music = Mix_LoadMUS("src/musiques/intro_musique_jeu.mp3");
     if(music == NULL)
     {
         SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
@@ -83,6 +83,13 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
 
         create_map(map);
 
+        music = Mix_LoadMUS("src/musiques/intro_musique_jeu.mp3");
+        if(music == NULL)
+        {
+            SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
+            goto quit;
+        }
+
         if(!create_link(&link, renderer, LINK))
             goto quit;
 
@@ -103,8 +110,36 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
         {
             frame_limit = SDL_GetTicks() + FPS;
 
-            if(change_music(debut, 15074, &music_changement, "src/musiques/musique_jeu.mp3", music) == -1)
+            if(change_music(debut, 15074, &music_changement, "src/musiques/musique_jeu.mp3", music, 0) == -1)
                 goto quit;
+
+            if(victoire != 0)
+            {
+                if(music_changement <= 1)
+                {
+                    debut =SDL_GetTicks();
+
+                    music = Mix_LoadMUS("src/musiques/intro_musique_victoire.mp3");
+                    if(music == NULL)
+                    {
+                        SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
+                        goto quit;
+                    }
+
+                    if(Mix_PlayMusic(music, 1) != 0)
+                    {
+                        SDL_Log("ERREUR : PLAY_MUSIC > %s\n", Mix_GetError());
+                        goto quit;
+                    }
+
+                    Mix_VolumeMusic(MIX_MAX_VOLUME / 2);
+
+                    music_changement++;
+                }
+
+                else if(change_music(debut, 8103, &music_changement, "src/musiques/musique_victoire.mp3", music, 2))
+                    goto quit;
+            }
 
             if(SDL_RenderClear(renderer) != 0)
             {

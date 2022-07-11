@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
     {
         frame_limit = SDL_GetTicks() + FPS;
 
-        if(change_music(debut, 35168, &music_changement, "src/musiques/musique_menu.mp3", music) == -1)
+        if(change_music(debut, 35168, &music_changement, "src/musiques/musique_menu.mp3", music, 0) == -1)
             goto quit;
 
         if(SDL_RenderCopy(renderer, texture_menu, NULL, NULL) != 0)
