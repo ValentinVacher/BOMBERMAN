@@ -3,15 +3,15 @@
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-SDL_bool play(SDL_Renderer *renderer, Input *in)
+int play(SDL_Renderer *renderer, Input *in)
 {
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 
     SDL_Event event;
-    SDL_bool game_launched = SDL_TRUE, space = SDL_FALSE, rctrl = SDL_FALSE, exite = SDL_FALSE;
-    SDL_Texture *texture_arriere_plan = NULL, *texture_mur_destructible = NULL, *texture_bombe[3];
-    int debut = SDL_GetTicks(), music_changement = 0, i = 0, victoire = 0;
+    SDL_bool game_launched = SDL_TRUE, space = SDL_FALSE, rctrl = SDL_FALSE;
+    SDL_Texture *texture_arriere_plan = NULL, *texture_mur_destructible = NULL, *texture_bombe[3], *texture_victoire[2];
+    int debut = SDL_GetTicks(), music_changement = 0, i = 0, victoire = 0, exite = 0;
     Mix_Music *music;
     Mix_Chunk *explosion;
     Link link, link_rouge;
@@ -43,38 +43,31 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
 
     texture_arriere_plan = load_image("src/images/map.jpg", renderer);
     if(texture_arriere_plan == NULL)
-    {
-        SDL_Log("ERREUR : CREATE_TEXTURE > %s\n", SDL_GetError());
         goto quit;
-    }
 
     texture_mur_destructible = load_image("src/images/mur_destructible.png", renderer);
     if(texture_mur_destructible == NULL)
-    {
-        SDL_Log("ERREUR : CREATE_TEXTURE > %s\n", SDL_GetError());
         goto quit;
-    }
 
     texture_bombe[0] = load_image("src/images/bombe.png", renderer);
     if(texture_bombe[0] == NULL)
-    {
-        SDL_Log("ERREUR : CREATE_TEXTURE > %s\n", SDL_GetError());
         goto quit;
-    }
 
     texture_bombe[1] = load_image("src/images/explosion.png", renderer);
     if(texture_bombe[1] == NULL)
-    {
-        SDL_Log("ERREUR : CREATE_TEXTURE > %s\n", SDL_GetError());
         goto quit;
-    }
 
     texture_bombe[3] = load_image("src/images/bombe_rouge.png", renderer);
     if(texture_bombe[3] == NULL)
-    {
-        SDL_Log("ERREUR : CREATE_TEXTURE > %s\n", SDL_GetError());
         goto quit;
-    }
+
+    texture_victoire[0] = load_image("src/images/victoire_link_vert.png", renderer);
+    if(texture_arriere_plan == NULL)
+        goto quit;
+
+    texture_victoire[1] = load_image("src/images/victoire_link_rouge.png", renderer);
+    if(texture_arriere_plan == NULL)
+        goto quit;
 
     if(SDL_QueryTexture(texture_arriere_plan, NULL, NULL, NULL, NULL) != 0)
     {
@@ -98,7 +91,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 
-    while (!in->quit && !in->key[SDL_SCANCODE_ESCAPE] && victoire == 0)
+    while (!in->quit && !in->key[SDL_SCANCODE_ESCAPE])
     {
         frame_limit = SDL_GetTicks() + FPS;
 
@@ -150,92 +143,107 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
             goto quit;
         }
 
+        if(victoire == LINK) 
+        {   
+            if(SDL_RenderCopy(renderer, texture_victoire[0], NULL, NULL))
+            {
+                SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
+                goto quit;
+            }
+        }
+
+        if(victoire == LINK_ROUGE) 
+        {   
+            if(SDL_RenderCopy(renderer, texture_victoire[1], NULL, NULL))
+            {
+                SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
+                goto quit;
+            }
+        }
+
         SDL_RenderPresent(renderer);
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 
         update_event(in);
 
-        if(in->key[SDL_SCANCODE_W])   
+        if(victoire == 0)
         {
-            deplacer_joueur(&link, HAUT);
-            detecte_map(map, &link, &link_rouge, HAUT, LINK);
-        }
+            if(in->key[SDL_SCANCODE_W])   
+            {
+                deplacer_joueur(&link, HAUT);
+                detecte_map(map, &link, &link_rouge, HAUT, LINK);
+            }
 
-        if(in->key[SDL_SCANCODE_S])
-        {
-            deplacer_joueur(&link, BAS);
-            detecte_map(map, &link, &link_rouge, BAS, LINK);
-        }
+            if(in->key[SDL_SCANCODE_S])
+            {
+                deplacer_joueur(&link, BAS);
+                detecte_map(map, &link, &link_rouge, BAS, LINK);
+            }
 
-        if(in->key[SDL_SCANCODE_A])
-        {
-            deplacer_joueur(&link, GAUCHE);
-            detecte_map(map, &link, &link_rouge, GAUCHE, LINK);
-        }
+            if(in->key[SDL_SCANCODE_A])
+            {
+                deplacer_joueur(&link, GAUCHE);
+                detecte_map(map, &link, &link_rouge, GAUCHE, LINK);
+            }
 
-        if(in->key[SDL_SCANCODE_D])
-        {
-            deplacer_joueur(&link, DROITE);
-            detecte_map(map, &link, &link_rouge, DROITE, LINK);
-        }
+            if(in->key[SDL_SCANCODE_D])
+            {
+                deplacer_joueur(&link, DROITE);
+                detecte_map(map, &link, &link_rouge, DROITE, LINK);
+            }
 
-        if(in->key[SDL_SCANCODE_SPACE] && !space)
-        {
-            creation_bombe(&link, &thread[0], map);
-            space = SDL_TRUE;
-        }
+            if(in->key[SDL_SCANCODE_SPACE] && !space)
+            {
+                creation_bombe(&link, &thread[0], map);
+                space = SDL_TRUE;
+            }
 
-        else if(!in->key[SDL_SCANCODE_SPACE] && space)
-            space = SDL_FALSE;
+            else if(!in->key[SDL_SCANCODE_SPACE] && space)
+                space = SDL_FALSE;
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 
-        if(in->key[SDL_SCANCODE_UP])   
-        {
-            deplacer_joueur(&link_rouge, HAUT);
-            detecte_map(map, &link_rouge, &link, HAUT, LINK_ROUGE);
-        }
+            if(in->key[SDL_SCANCODE_UP])   
+            {
+                deplacer_joueur(&link_rouge, HAUT);
+                detecte_map(map, &link_rouge, &link, HAUT, LINK_ROUGE);
+            }
 
-        if(in->key[SDL_SCANCODE_DOWN])
-        {
-            deplacer_joueur(&link_rouge, BAS);
-            detecte_map(map, &link_rouge, &link, BAS, LINK_ROUGE);
-        }
+            if(in->key[SDL_SCANCODE_DOWN])
+            {
+                deplacer_joueur(&link_rouge, BAS);
+                detecte_map(map, &link_rouge, &link, BAS, LINK_ROUGE);
+            }
 
-        if(in->key[SDL_SCANCODE_LEFT])
-        {
-            deplacer_joueur(&link_rouge, GAUCHE);
-            detecte_map(map, &link_rouge, &link, GAUCHE, LINK_ROUGE);
-        }
+            if(in->key[SDL_SCANCODE_LEFT])
+            {
+                deplacer_joueur(&link_rouge, GAUCHE);
+                detecte_map(map, &link_rouge, &link, GAUCHE, LINK_ROUGE);
+            }
 
-        if(in->key[SDL_SCANCODE_RIGHT])
-        {
-            deplacer_joueur(&link_rouge, DROITE);
-            detecte_map(map, &link_rouge, &link, DROITE, LINK_ROUGE);
-        }
+            if(in->key[SDL_SCANCODE_RIGHT])
+            {
+                deplacer_joueur(&link_rouge, DROITE);
+                detecte_map(map, &link_rouge, &link, DROITE, LINK_ROUGE);
+            }
 
-        if(in->key[SDL_SCANCODE_RCTRL] && !rctrl)
-        {
-            creation_bombe(&link_rouge, &thread[1], map);
-            rctrl = SDL_TRUE;
-        }
+            if(in->key[SDL_SCANCODE_RCTRL] && !rctrl)
+            {
+                creation_bombe(&link_rouge, &thread[1], map);
+                rctrl = SDL_TRUE;
+            }
 
-        else if(!in->key[SDL_SCANCODE_RCTRL] && rctrl)
-            rctrl = SDL_FALSE;
+            else if(!in->key[SDL_SCANCODE_RCTRL] && rctrl)
+                rctrl = SDL_FALSE;
 
-        limite_fps(frame_limit, 1); 
-    } 
+            limite_fps(frame_limit, 1); 
+        } 
+    }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 
-    if(victoire == LINK)
-        printf("Victoire du joueur vert");
-
-    if(victoire == LINK_ROUGE)
-        printf("Victoire du joueur rouge");
-
-    exite = SDL_TRUE;
+    exite = 1;
 
     quit:
 
@@ -244,6 +252,10 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
 
     if(explosion != NULL)
         Mix_FreeChunk(explosion);
+
+    for(i = 0 ; i < 3 ; i++)
+        if(texture_victoire[i] != NULL)
+            SDL_DestroyTexture(texture_bombe[i]);
 
     if(link.direction_actuel != NULL)
     {
