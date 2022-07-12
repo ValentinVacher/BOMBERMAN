@@ -5,8 +5,6 @@ Mon objectif est d'apprendre la programmation en C et à utiliser la bibliothèq
 <br/>
 ### CONTRÔLE :
 
-ENTREE : lancer et relancer le jeu
-<br/>
 ECHAP : retour au menu
 <br/>
 ZQSD : déplacer link vert
