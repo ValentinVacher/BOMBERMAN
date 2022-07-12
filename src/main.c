@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
         goto quit;
 
     music = Mix_LoadMUS("src/musiques/intro_musique_menu.mp3");
+    printf("LOAD_MUSIC : src/musiques/intro_musique_menu.mp3\n");
     if(music == NULL)
     {
         SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
@@ -35,12 +36,7 @@ int main(int argc, char *argv[])
     if(texture_menu == NULL)
         goto quit;
 
-    if(SDL_QueryTexture(texture_menu, NULL, NULL, NULL, NULL) != 0)
-    {
-        SDL_Log("ERREUR : QUERY_TEXTURE > %s\n", SDL_GetError());
-        goto quit;
-    }
-
+    printf("PLAY_MUSIC\n");
     if(Mix_PlayMusic(music, 1) != 0)
     {
         SDL_Log("ERREUR : PLAY_MUSIC > %s\n", Mix_GetError());
@@ -112,19 +108,33 @@ int main(int argc, char *argv[])
     quit:
 
     if(music != NULL)
+    {
         Mix_FreeMusic(music);
+        printf("FREE_MUSIC\n");
+    }
 
-    if(texture_menu != NULL)    
+    if(texture_menu != NULL) 
+    {   
         SDL_DestroyTexture(texture_menu);
+        printf("DESTROY_TEXTURE : TEXTURE_MENU\n");
+    }
 
     if(renderer != NULL)
+    {
         SDL_DestroyRenderer(renderer);
+        printf("DESTROY_RENDERER : RENDERER\n");
+    }
 
     if(window != NULL)
+    {
         SDL_DestroyWindow(window);
+        printf("DESTROY_WINDOW : WINDOW\n");
+    }
  
     Mix_CloseAudio();
+    printf("CLOSE_AUDIO\n");
     SDL_Quit();
+    printf("QUIT\n");
 
     return statut;
 }

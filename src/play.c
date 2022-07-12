@@ -23,14 +23,8 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
 
     Mix_AllocateChannels(2);
 
-    music = Mix_LoadMUS("src/musiques/intro_musique_jeu.mp3");
-    if(music == NULL)
-    {
-        SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
-        goto quit;
-    }
-
     explosion = Mix_LoadWAV("src/musiques/explosion.mp3");
+    printf("LOAD_WAV : src/musiques/explosion.mp3\n");
     if(explosion == NULL)
     {
         SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
@@ -67,12 +61,6 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
     if(texture_arriere_plan == NULL)
         goto quit;
 
-    if(SDL_QueryTexture(texture_arriere_plan, NULL, NULL, NULL, NULL) != 0)
-    {
-        SDL_Log("ERREUR : QUERY_TEXTURE > %s\n",SDL_GetError());
-        goto quit;
-    }
-
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 
     while(rejouer && !in->quit && !in->key[SDL_SCANCODE_ESCAPE])
@@ -84,6 +72,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
         create_map(map);
 
         music = Mix_LoadMUS("src/musiques/intro_musique_jeu.mp3");
+        printf("LOAD_MUSIC : src/musiques/intro_musique_jeu.mp3\n");
         if(music == NULL)
         {
             SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
@@ -96,6 +85,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
         if(!create_link(&link_rouge, renderer, LINK_ROUGE))
             goto quit;
 
+        printf("PLAY_MUSIC\n");
         if(Mix_PlayMusic(music, 1) != 0)
         {
             SDL_Log("ERREUR : PLAY_MUSIC > %s\n", Mix_GetError());
@@ -305,39 +295,61 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
     quit:
 
     if(music != NULL)   
+    {
         Mix_FreeMusic(music);
+        printf("FREE_MUSIC\n");
+    }
 
     if(explosion != NULL)
+    {
         Mix_FreeChunk(explosion);
+        printf("FREE_CHUNK : EXPLOSION\n");
+    }
 
     for(i = 0 ; i < 3 ; i++)
         if(texture_victoire[i] != NULL)
+        {
             SDL_DestroyTexture(texture_bombe[i]);
+            printf("DESTROY_TEXTURE : TEXTURE_VICTOIRE[%d]\n", i);
+        }
 
     if(link.direction_actuel != NULL)
     {
         SDL_DestroyTexture(link.direction_actuel);
+        printf("DESTROY_TEXTURE : LINK.DIRECTION_ACTUEL\n");
         free_link(link.direction);
     }
 
     if(link_rouge.direction_actuel != NULL)
     {
         SDL_DestroyTexture(link_rouge.direction_actuel);
+        printf("DESTROY_TEXTURE : LINK_ROUGE.DIRECTION_ACTUEL\n");
         free_link(link_rouge.direction);
     }
 
     for(i = 0 ; i < 3 ; i++)
         if(texture_bombe[i] != NULL)
+        {
             SDL_DestroyTexture(texture_bombe[i]);
+            printf("DESTROY_TEXTURE : TEXTURE_BOMBE[%d]\n", i);
+        }
 
     if(texture_mur_destructible != NULL)
+    {
         SDL_DestroyTexture(texture_mur_destructible);
+        printf("DESTROY_TEXTURE : TEXTURE_MUR_DESTRUCTIBLE\n");
+    }
 
     if(texture_arriere_plan != NULL)
+    {
         SDL_DestroyTexture(texture_arriere_plan);
+        printf("DESTROY_TEXTURE : TEXTURE_ARRIERE_PLAN\n");
+    }
 
     pthread_join(thread[0], NULL);
+    printf("PTHREAD_JOIN : THREAD[0]\n");
     pthread_join(thread[1], NULL);
+    printf("PTHREAD_JOIN : THREAD[1]\n");
                 
     return exite;
 }

@@ -5,18 +5,21 @@
 
 int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h)
 {
+    printf("INIT_VIDEO\n");
     if(SDL_Init(SDL_INIT_VIDEO) != 0)
     {
         SDL_Log("ERREUR : INIT_VIDEO > %s\n",SDL_GetError());
         return -1;
     }
 
+    printf("OPEN_AUDIO\n");
     if(Mix_OpenAudio(96000, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) != 0)
     {
         SDL_Log("ERREUR : OPEN_AUDIO > %s\n", Mix_GetError());
         return -1;
     }
 
+    printf("CREATE_WINDOW_AND_RENDERER\n");
     if(SDL_CreateWindowAndRenderer(w, h, SDL_WINDOW_SHOWN, window, renderer) != 0)
     {
         SDL_Log("ERREUR : CREATE_WINDOW_OR_RENDERER > %s\n",SDL_GetError());
@@ -32,6 +35,7 @@ SDL_Texture *load_image(const char path[], SDL_Renderer *renderer)
     SDL_Texture *texture = NULL;
 
     image = IMG_Load(path);
+    printf("LOAD_IMAGE : %s\n", path);
     if(image == NULL)
     {
         SDL_Log("ERREUR : LOAD_IMAGE > %s\n",SDL_GetError());
@@ -39,7 +43,9 @@ SDL_Texture *load_image(const char path[], SDL_Renderer *renderer)
     }
 
     texture = SDL_CreateTextureFromSurface(renderer, image);
+    printf("CREATE_TEXTURE_FROME_SURFACE\n");
     SDL_FreeSurface(image);
+    printf("FREE_SURFACE\n");
     if(texture == NULL)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n",SDL_GetError());
@@ -55,14 +61,16 @@ int change_music(const int debut, const int duree, int *music_changement, const 
     if(SDL_GetTicks() - debut >= duree && *music_changement == nb_changement)
     {
         music = Mix_LoadMUS(path);
+        printf("LOAD_MUSIC : %s\n", path);
         if(music == NULL)
         {
-            SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
+            SDL_Log("ERREUR : LOAD_MUSIC > %s\n", Mix_GetError());
             return 1;
         }
 
         *music_changement += 1;
 
+        printf("PLAY_MUSIC\n");
         if(Mix_PlayMusic(music, -1) != 0)
         {
             SDL_Log("ERREUR : PLAY_MUSIC > %s\n", Mix_GetError());
