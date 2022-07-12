@@ -64,36 +64,46 @@ int main(int argc, char *argv[])
 
         update_event(&in);
 
-        if(in.key[40])
+        if(in.mouse[SDL_BUTTON_LEFT] && in.x >= 1400 && in.x <= 1820)
         {
-            Mix_FreeMusic(music);
-            SDL_DestroyTexture(texture_menu);
-
-            if(!play(renderer, &in))
-                goto quit;
-
-            music_changement = 0;
-            debut = SDL_GetTicks();
-
-            music = Mix_LoadMUS("src/musiques/intro_musique_menu.mp3");
-            if(music == NULL)
+            if(in.y >= 86 && in.y <= 233)
             {
-                SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
-                goto quit;
+                Mix_FreeMusic(music);
+                SDL_DestroyTexture(texture_menu);
+
+                if(!play(renderer, &in))
+                    goto quit;
+                
+                else if(in.quit == 2)   
+                    in.quit = SDL_FALSE;
+
+                music_changement = 0;
+                debut = SDL_GetTicks();
+
+                music = Mix_LoadMUS("src/musiques/intro_musique_menu.mp3");
+                if(music == NULL)
+                {
+                    SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
+                    goto quit;
+                }
+
+                if(Mix_PlayMusic(music, -1) != 0)
+                {
+                    SDL_Log("ERREUR : PLAY_MUSIC > %s\n", Mix_GetError());
+                    goto quit;
+                }
+
+                Mix_VolumeMusic(MIX_MAX_VOLUME);
+
+                texture_menu = load_image("src/images/menu.jpg", renderer);
+                if(texture_menu == NULL)
+                    goto quit;
             }
 
-            if(Mix_PlayMusic(music, -1) != 0)
-            {
-                SDL_Log("ERREUR : PLAY_MUSIC > %s\n", Mix_GetError());
-                goto quit;
-            }
-
-            Mix_VolumeMusic(MIX_MAX_VOLUME);
-
-            texture_menu = load_image("src/images/menu.jpg", renderer);
-            if(texture_menu == NULL)
-                goto quit;
+            else if(in.y >= 296 && in.y <= 443)
+                in.quit = SDL_TRUE;
         }
+
         limite_fps(frame_limit, FPS);
     }
 

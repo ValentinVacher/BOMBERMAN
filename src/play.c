@@ -281,14 +281,20 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
                     rctrl = SDL_FALSE;
             } 
 
-            limite_fps(frame_limit, 1); 
-
-            if(victoire != 0 && in->key[40])
+            else if (in->mouse[SDL_BUTTON_LEFT] && in->x >= 750 && in->x <= 1170)
             {
-                pthread_join(thread[0], NULL);
-                pthread_join(thread[1], NULL);
-                break;
+                if(in->y >= 491 && in->y <= 638)
+                {
+                    pthread_join(thread[0], NULL);
+                    pthread_join(thread[1], NULL);
+                    break;
+                }
+
+                else if(in->y >= 685 && in->y <= 833)
+                    in->quit = 2;
             }
+
+            limite_fps(frame_limit, 1); 
         }
     }
 
