@@ -88,7 +88,7 @@ SDL_bool pose_bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *
 
     else if (link->bombe.explosion == BOMBE_ROUGE)
     {
-        if(SDL_RenderCopy(renderer, texture_bombe[3], NULL, &map[link->bombe.i][link->bombe.j].coord_case) != 0)
+        if(SDL_RenderCopy(renderer, texture_bombe[2], NULL, &map[link->bombe.i][link->bombe.j].coord_case) != 0)
         {
             SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
             return SDL_FALSE;

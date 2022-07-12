@@ -27,14 +27,14 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
     if(music == NULL)
     {
         SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
-        return exite;
+        goto quit;
     }
 
     explosion = Mix_LoadWAV("src/musiques/explosion.mp3");
     if(explosion == NULL)
     {
         SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
-        return exite;
+        goto quit;
     }
 
     Mix_VolumeChunk(explosion, MIX_MAX_VOLUME / 2);
@@ -55,8 +55,8 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
     if(texture_bombe[1] == NULL)
         goto quit;
 
-    texture_bombe[3] = load_image("src/images/bombe_rouge.png", renderer);
-    if(texture_bombe[3] == NULL)
+    texture_bombe[2] = load_image("src/images/bombe_rouge.png", renderer);
+    if(texture_bombe[2] == NULL)
         goto quit;
 
     texture_victoire[0] = load_image("src/images/victoire_link_vert.png", renderer);
