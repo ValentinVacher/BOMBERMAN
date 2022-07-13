@@ -59,7 +59,17 @@ SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur)
         link->direction[GAUCHE][10] = load_image("src/images/animation_link/link_gauche_10.png", renderer);
 
 
-        link->direction[DROITE][0] = load_image("src/images/link_droite.png", renderer);   
+        link->direction[DROITE][0] = load_image("src/images/link_droite.png", renderer); 
+        link->direction[DROITE][2] = load_image("src/images/animation_link/link_droit_2.png", renderer);
+        link->direction[DROITE][1] = load_image("src/images/animation_link/link_droit_1.png", renderer);
+        link->direction[DROITE][3] = load_image("src/images/animation_link/link_droit_3.png", renderer);
+        link->direction[DROITE][4] = load_image("src/images/animation_link/link_droit_4.png", renderer);
+        link->direction[DROITE][5] = load_image("src/images/animation_link/link_droit_5.png", renderer);
+        link->direction[DROITE][6] = load_image("src/images/animation_link/link_droit_6.png", renderer);
+        link->direction[DROITE][7] = load_image("src/images/animation_link/link_droit_7.png", renderer);
+        link->direction[DROITE][8] = load_image("src/images/animation_link/link_droit_8.png", renderer);
+        link->direction[DROITE][9] = load_image("src/images/animation_link/link_droit_9.png", renderer);
+        link->direction[DROITE][10] = load_image("src/images/animation_link/link_droit_10.png", renderer);  
 
         link->forme.x = 135;
         link->forme.y = 15; 
