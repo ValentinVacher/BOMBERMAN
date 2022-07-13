@@ -124,7 +124,7 @@ SDL_bool pose_bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *
                 *victoire = link->couleur;
 
             else if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i - 1][link->bombe.j].coord_case))
-                    *victoire = link2->couleur;
+                *victoire = link2->couleur;
 
             else if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i - 1][link->bombe.j].coord_case))
                 *victoire = link->couleur;

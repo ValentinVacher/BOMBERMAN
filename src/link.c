@@ -35,6 +35,17 @@ SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur)
         link->direction[HAUT][10] = load_image("src/images/animation_link/link_haut_10.png", renderer);
 
         link->direction[BAS][0] = load_image("src/images/link_face.png", renderer);
+        link->direction[BAS][1] = load_image("src/images/animation_link/link_bas_1.png", renderer);
+        link->direction[BAS][2] = load_image("src/images/animation_link/link_bas_2.png", renderer);
+        link->direction[BAS][3] = load_image("src/images/animation_link/link_bas_3.png", renderer);
+        link->direction[BAS][4] = load_image("src/images/animation_link/link_bas_4.png", renderer);
+        link->direction[BAS][5] = load_image("src/images/animation_link/link_bas_5.png", renderer);
+        link->direction[BAS][6] = load_image("src/images/animation_link/link_bas_6.png", renderer);
+        link->direction[BAS][7] = load_image("src/images/animation_link/link_bas_7.png", renderer);
+        link->direction[BAS][8] = load_image("src/images/animation_link/link_bas_8.png", renderer);
+        link->direction[BAS][9] = load_image("src/images/animation_link/link_bas_9.png", renderer);
+        link->direction[BAS][10] = load_image("src/images/animation_link/link_bas_10.png", renderer);
+
         link->direction[GAUCHE][0] = load_image("src/images/link_gauche.png", renderer);
         link->direction[DROITE][0] = load_image("src/images/link_droite.png", renderer);   
 
@@ -202,4 +213,13 @@ void *gestion_bombe(void *arg)
     link->bombe.explosion = BOMBE;
     
     pthread_exit(NULL);
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+void link_animation(int *animation)
+{
+    *animation += 2;
+        if(*animation > 1000)
+            *animation = 100;
 }

@@ -19,7 +19,7 @@ SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur);
 void deplacer_joueur(Link *link, const int direction);
 void creation_bombe(Link *link, pthread_t *thread, Map map[][HAUTEUR]);
 void *gestion_bombe(void *arg);
-void *link_animation(void *arg);
+void link_animation(int *animation);
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h);
