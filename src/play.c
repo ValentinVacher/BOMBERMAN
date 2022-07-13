@@ -206,21 +206,23 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
                 {
                     deplacer_joueur(&link, HAUT);
                     detecte_map(map, &link, &link_rouge, HAUT, LINK);
-                    link_animation(&link.animation);
+                    if(!in->key[SDL_SCANCODE_A] && !in->key[SDL_SCANCODE_D])
+                        link_animation(&link.animation);
                 }
 
                 if(in->key[SDL_SCANCODE_S])
                 {
                     deplacer_joueur(&link, BAS);
                     detecte_map(map, &link, &link_rouge, BAS, LINK);
-                    link_animation(&link.animation);
+                    if(!in->key[SDL_SCANCODE_A] && !in->key[SDL_SCANCODE_D])
+                        link_animation(&link.animation);
                 }
 
                 if(in->key[SDL_SCANCODE_A])
                 {
-                    link.animation = 0;
                     deplacer_joueur(&link, GAUCHE);
                     detecte_map(map, &link, &link_rouge, GAUCHE, LINK);
+                    link_animation(&link.animation);
                 }
 
                 if(in->key[SDL_SCANCODE_D])
