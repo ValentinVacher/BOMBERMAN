@@ -71,9 +71,9 @@ typedef struct Bombe
 
 typedef struct Link
 {
-    SDL_Texture *direction[4], *direction_actuel;
+    SDL_Texture *direction[4][11], *direction_actuel;
     SDL_Rect forme, hitbox;
-    int nb_bombe, nb_bombe_max, i, j, couleur;
+    int nb_bombe, nb_bombe_max, i, j, couleur, animation;
     Bombe bombe;
 }Link;
 

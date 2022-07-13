@@ -9,7 +9,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 
     SDL_Event event;
-    SDL_bool game_launched = SDL_TRUE, space = SDL_FALSE, rctrl = SDL_FALSE, exite = SDL_FALSE;
+    SDL_bool game_launched = SDL_TRUE, space = SDL_FALSE, rctrl = SDL_FALSE, exite_statue = SDL_FALSE;
     SDL_Texture *texture_arriere_plan = NULL, *texture_mur_destructible = NULL, *texture_bombe[3], *texture_victoire[2];
     int debut = SDL_GetTicks(), music_changement = 0, i = 0, victoire = 0,  rejouer = 1;
     Mix_Music *music;
@@ -17,7 +17,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
     Link link, link_rouge;
     Map map[LARGEUR][HAUTEUR];
     unsigned int frame_limit = 0; 
-    pthread_t thread[2];
+    pthread_t thread[3];
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -28,38 +28,38 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
     if(explosion == NULL)
     {
         SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
-        goto quit;
+        goto quit_play;
     }
 
     Mix_VolumeChunk(explosion, MIX_MAX_VOLUME / 2);
 
     texture_arriere_plan = load_image("src/images/map.jpg", renderer);
     if(texture_arriere_plan == NULL)
-        goto quit;
+        goto quit_play;
 
     texture_mur_destructible = load_image("src/images/mur_destructible.png", renderer);
     if(texture_mur_destructible == NULL)
-        goto quit;
+        goto quit_play;
 
     texture_bombe[0] = load_image("src/images/bombe.png", renderer);
     if(texture_bombe[0] == NULL)
-        goto quit;
+        goto quit_play;
 
     texture_bombe[1] = load_image("src/images/explosion.png", renderer);
     if(texture_bombe[1] == NULL)
-        goto quit;
+        goto quit_play;
 
     texture_bombe[2] = load_image("src/images/bombe_rouge.png", renderer);
     if(texture_bombe[2] == NULL)
-        goto quit;
+        goto quit_play;
 
     texture_victoire[0] = load_image("src/images/victoire_link_vert.png", renderer);
     if(texture_arriere_plan == NULL)
-        goto quit;
+        goto quit_play;
 
     texture_victoire[1] = load_image("src/images/victoire_link_rouge.png", renderer);
     if(texture_arriere_plan == NULL)
-        goto quit;
+        goto quit_play;
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -76,20 +76,20 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
         if(music == NULL)
         {
             SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
-            goto quit;
+            goto quit_play;
         }
 
         if(!create_link(&link, renderer, LINK))
-            goto quit;
+            goto quit_play;
 
         if(!create_link(&link_rouge, renderer, LINK_ROUGE))
-            goto quit;
+            goto quit_play;
 
         printf("PLAY_MUSIC\n");
         if(Mix_PlayMusic(music, 1) != 0)
         {
             SDL_Log("ERREUR : PLAY_MUSIC > %s\n", Mix_GetError());
-            goto quit;
+            goto quit_play;
         }
 
         Mix_VolumeMusic(MIX_MAX_VOLUME / 3);
@@ -101,7 +101,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
             frame_limit = SDL_GetTicks() + FPS;
 
             if(change_music(debut, 15074, &music_changement, "src/musiques/musique_jeu.mp3", music, 0) == -1)
-                goto quit;
+                goto quit_play;
 
             if(victoire != 0)
             {
@@ -113,13 +113,13 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
                     if(music == NULL)
                     {
                         SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
-                        goto quit;
+                        goto quit_play;
                     }
 
                     if(Mix_PlayMusic(music, 1) != 0)
                     {
                         SDL_Log("ERREUR : PLAY_MUSIC > %s\n", Mix_GetError());
-                        goto quit;
+                        goto quit_play;
                     }
 
                     Mix_VolumeMusic(MIX_MAX_VOLUME / 2);
@@ -128,52 +128,52 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
                 }
 
                 else if(change_music(debut, 8103, &music_changement, "src/musiques/musique_victoire.mp3", music, 2))
-                    goto quit;
+                    goto quit_play;
             }
 
             if(SDL_RenderClear(renderer) != 0)
             {
-                SDL_Log("ERREUR : QUERY_TEXTURE > %s\n",SDL_GetError());
-                goto quit;
+                SDL_Log("ERREUR : RENDER_CLEAR > %s\n",SDL_GetError());
+                goto quit_play;
             }
 
             if(SDL_QueryTexture(link.direction_actuel, NULL, NULL, &link.forme.w, &link.forme.h) != 0)
             {
-                SDL_Log("ERREUR : QUERY_TEXTURE > %s\n",SDL_GetError());
-                goto quit;
+                SDL_Log("ERREUR QUERY_TEXTURE : LINK.DIRECTION_ACTUEL > %s\n",SDL_GetError());
+                goto quit_play;
             }
 
             if(SDL_QueryTexture(link_rouge.direction_actuel, NULL, NULL, &link_rouge.forme.w, &link_rouge.forme.h) != 0)
             {
-                SDL_Log("ERREUR : QUERY_TEXTURE > %s\n",SDL_GetError());
-                goto quit;
+                SDL_Log("ERREUR QUERY_TEXTURE : LINK_ROUGE.DIRECTION_ACTUEL > %s\n",SDL_GetError());
+                goto quit_play;
             }
 
             if(SDL_RenderCopy(renderer, texture_arriere_plan, NULL, NULL) != 0)
             {
                 SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
-                goto quit;
+                goto quit_play;
             }
 
             if(!print_wall(map, renderer, texture_mur_destructible))
-                goto quit;
+                goto quit_play;
 
             if(!pose_bombe(texture_bombe, renderer, &link, &link_rouge ,map, explosion, &victoire))
-                goto quit;
+                goto quit_play;
 
             if(!pose_bombe(texture_bombe, renderer, &link_rouge, &link ,map, explosion, &victoire))
-                goto quit;
+                goto quit_play;
 
             if(SDL_RenderCopy(renderer, link.direction_actuel, NULL, &link.forme) != 0)
             {
                 SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
-                goto quit;
+                goto quit_play;
             }
 
             if(SDL_RenderCopy(renderer, link_rouge.direction_actuel, NULL, &link_rouge.forme) != 0)
             {
                 SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
-                goto quit;
+                goto quit_play;
             }
 
             if(victoire == LINK) 
@@ -181,7 +181,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
                 if(SDL_RenderCopy(renderer, texture_victoire[0], NULL, NULL))
                 {
                     SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
-                    goto quit;
+                    goto quit_play;
                 }
             }
 
@@ -190,7 +190,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
                 if(SDL_RenderCopy(renderer, texture_victoire[1], NULL, NULL))
                 {
                     SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
-                    goto quit;
+                    goto quit_play;
                 }
             }
 
@@ -206,22 +206,28 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
                 {
                     deplacer_joueur(&link, HAUT);
                     detecte_map(map, &link, &link_rouge, HAUT, LINK);
+                    link.animation += 2;
+                    if(link.animation > 1000)
+                        link.animation = 0;
                 }
 
                 if(in->key[SDL_SCANCODE_S])
                 {
+                    link.animation = 0;
                     deplacer_joueur(&link, BAS);
                     detecte_map(map, &link, &link_rouge, BAS, LINK);
                 }
 
                 if(in->key[SDL_SCANCODE_A])
                 {
+                    link.animation = 0;
                     deplacer_joueur(&link, GAUCHE);
                     detecte_map(map, &link, &link_rouge, GAUCHE, LINK);
                 }
 
                 if(in->key[SDL_SCANCODE_D])
                 {
+                    link.animation = 0;
                     deplacer_joueur(&link, DROITE);
                     detecte_map(map, &link, &link_rouge, DROITE, LINK);
                 }
@@ -290,9 +296,9 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 
-    exite = SDL_TRUE;
+    exite_statue = SDL_TRUE;
 
-    quit:
+    quit_play:
 
     if(music != NULL)   
     {
@@ -350,6 +356,8 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
     printf("PTHREAD_JOIN : THREAD[0]\n");
     pthread_join(thread[1], NULL);
     printf("PTHREAD_JOIN : THREAD[1]\n");
+    pthread_join(thread[2], NULL);
+    printf("PTHREAD_JOIN : THREAD[2]\n");
                 
-    return exite;
+    return exite_statue;
 }

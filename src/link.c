@@ -3,16 +3,17 @@
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-void free_link(SDL_Texture *link[])
+void free_link(SDL_Texture *link[][11])
 {
-    int i;
+    int i, j;
 
     for(i = 0 ; i < 4 ; i++) 
-        if(link[i] != NULL)
-        {
-            SDL_DestroyTexture(link[i]);
-            printf("DESTROY_TEXTURE : LINK.DIRECTION[%d]\n", i);
-        }
+        for(j = 0 ; j < 11 ; j++)
+            if(link[i][j] != NULL)
+            {
+                SDL_DestroyTexture(link[i][0]);
+                printf("DESTROY_TEXTURE : LINK.DIRECTION[%d][%d]\n", i, j);
+            }
 }
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -21,10 +22,21 @@ SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur)
 {
     if(joueur == LINK)
     {
-        link->direction[HAUT] = load_image("src/images/link_dos.png", renderer);
-        link->direction[BAS] = load_image("src/images/link_face.png", renderer);
-        link->direction[GAUCHE] = load_image("src/images/link_gauche.png", renderer);
-        link->direction[DROITE] = load_image("src/images/link_droite.png", renderer);   
+        link->direction[HAUT][0] = load_image("src/images/link_dos.png", renderer);
+        link->direction[HAUT][1] = load_image("src/images/animation_link/link_haut_1.png", renderer);
+        link->direction[HAUT][2] = load_image("src/images/animation_link/link_haut_2.png", renderer);
+        link->direction[HAUT][3] = load_image("src/images/animation_link/link_haut_3.png", renderer);
+        link->direction[HAUT][4] = load_image("src/images/animation_link/link_haut_4.png", renderer);
+        link->direction[HAUT][5] = load_image("src/images/animation_link/link_haut_5.png", renderer);
+        link->direction[HAUT][6] = load_image("src/images/animation_link/link_haut_6.png", renderer);
+        link->direction[HAUT][7] = load_image("src/images/animation_link/link_haut_7.png", renderer);
+        link->direction[HAUT][8] = load_image("src/images/animation_link/link_haut_8.png", renderer);
+        link->direction[HAUT][9] = load_image("src/images/animation_link/link_haut_9.png", renderer);
+        link->direction[HAUT][10] = load_image("src/images/animation_link/link_haut_10.png", renderer);
+
+        link->direction[BAS][0] = load_image("src/images/link_face.png", renderer);
+        link->direction[GAUCHE][0] = load_image("src/images/link_gauche.png", renderer);
+        link->direction[DROITE][0] = load_image("src/images/link_droite.png", renderer);   
 
         link->forme.x = 135;
         link->forme.y = 15; 
@@ -40,10 +52,10 @@ SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur)
 
     else if(joueur == LINK_ROUGE)  
     {
-        link->direction[HAUT] = load_image("src/images/link_dos_rouge.png", renderer);
-        link->direction[BAS] = load_image("src/images/link_face_rouge.png", renderer);
-        link->direction[GAUCHE] = load_image("src/images/link_gauche_rouge.png", renderer);
-        link->direction[DROITE] = load_image("src/images/link_droite_rouge.png", renderer); 
+        link->direction[HAUT][0] = load_image("src/images/link_dos_rouge.png", renderer);
+        link->direction[BAS][0] = load_image("src/images/link_face_rouge.png", renderer);
+        link->direction[GAUCHE][0] = load_image("src/images/link_gauche_rouge.png", renderer);
+        link->direction[DROITE][0] = load_image("src/images/link_droite_rouge.png", renderer); 
 
         link->forme.x = 135 + 1650 - 90;
         link->forme.y = 15 + 1050 - 115; 
@@ -57,7 +69,7 @@ SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur)
         link->couleur = LINK_ROUGE;
     }
 
-    if(link->direction[HAUT] == NULL)
+    if(link->direction[HAUT][0] == NULL)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n",SDL_GetError());
         free_link(link->direction);
@@ -65,7 +77,7 @@ SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur)
     }
 
     
-    if(link->direction[BAS] == NULL)
+    if(link->direction[BAS][0] == NULL)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n",SDL_GetError());
         free_link(link->direction);
@@ -73,7 +85,7 @@ SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur)
     }
     
     
-    if(link->direction[GAUCHE] == NULL)
+    if(link->direction[GAUCHE][0] == NULL)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n",SDL_GetError());
         free_link(link->direction);
@@ -81,7 +93,7 @@ SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur)
     }
 
    
-    if(link->direction[DROITE] == NULL)
+    if(link->direction[DROITE][0] == NULL)
     {
         SDL_Log("ERREUR : CREATE_TEXTURE > %s\n",SDL_GetError());
         free_link(link->direction);
@@ -91,13 +103,15 @@ SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur)
     link->hitbox.w = 80;
     link->hitbox.h = 105;
 
-    link->direction_actuel = link->direction[BAS];
+    link->direction_actuel = link->direction[BAS][0];
 
     link->nb_bombe_max = 1;
     link->nb_bombe = 0;
 
     link->bombe.explosion = BOMBE;
     link->bombe.son = SDL_FALSE;
+
+    link->animation = 0;
 
     return SDL_TRUE;
 }
@@ -106,7 +120,7 @@ SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur)
 
 void deplacer_joueur(Link *link, const int direction)
 {
-    link->direction_actuel = link->direction[direction];
+    link->direction_actuel = link->direction[direction][link->animation / 100];
 
     if(direction == HAUT && link->hitbox.y > MUR_HAUTEUR)
     {

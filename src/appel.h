@@ -14,11 +14,12 @@ SDL_bool pose_bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-void free_link(SDL_Texture *link[]);
+void free_link(SDL_Texture *link[][11]);
 SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur);
 void deplacer_joueur(Link *link, const int direction);
 void creation_bombe(Link *link, pthread_t *thread, Map map[][HAUTEUR]);
 void *gestion_bombe(void *arg);
+void *link_animation(void *arg);
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h);
