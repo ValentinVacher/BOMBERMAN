@@ -158,10 +158,10 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
             if(!print_wall(map, renderer, texture_mur_destructible))
                 goto quit_play;
 
-            if(!pose_bombe(texture_bombe, renderer, &link, &link_rouge ,map, explosion, &victoire))
+            if(!bombe(texture_bombe, renderer, &link, &link_rouge ,map, explosion, &victoire))
                 goto quit_play;
 
-            if(!pose_bombe(texture_bombe, renderer, &link_rouge, &link ,map, explosion, &victoire))
+            if(!bombe(texture_bombe, renderer, &link_rouge, &link ,map, explosion, &victoire))
                 goto quit_play;
 
             if(SDL_RenderCopy(renderer, link.direction_actuel, NULL, &link.forme) != 0)

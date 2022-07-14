@@ -141,6 +141,9 @@ SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur)
     link->nb_bombe_max = 1;
     link->nb_bombe = 0;
 
+    link->bombe.i = link->i;
+    link->bombe.j = link->j;
+
     link->bombe.explosion = BOMBE;
     link->bombe.son = SDL_FALSE;
 

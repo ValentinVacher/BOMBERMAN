@@ -75,7 +75,7 @@ SDL_bool print_wall(Map map[][HAUTEUR], SDL_Renderer *renderer, SDL_Texture *tex
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-SDL_bool pose_bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *link, Link *link2, Map map[][HAUTEUR], Mix_Chunk *explosion, int *victoire)
+SDL_bool bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *link, Link *link2, Map map[][HAUTEUR], Mix_Chunk *explosion, int *victoire)
 {
     if(link->nb_bombe == 1 && link->bombe.explosion == BOMBE)
     {
@@ -111,34 +111,34 @@ SDL_bool pose_bombe(SDL_Texture *texture_bombe[], SDL_Renderer *renderer, Link *
 
         if(*victoire == 0)
         {
-            if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i][link->bombe.j].coord_case))
+            if(link->i == link->bombe.i && link->j == link->bombe.j)
                 *victoire = link2->couleur;
-
-            else if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i][link->bombe.j].coord_case))
+            
+            else if(link2->i == link->bombe.i && link2->j == link->bombe.j)
                 *victoire = link->couleur;
 
-            else if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i + 1][link->bombe.j].coord_case))
+            else if(map[link->bombe.i + 1][link->bombe.j].type == LINK)
                 *victoire = link2->couleur;
-
-            else if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i + 1][link->bombe.j].coord_case))
+            
+            else if(map[link->bombe.i + 1][link->bombe.j].type == LINK_ROUGE)
                 *victoire = link->couleur;
 
-            else if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i - 1][link->bombe.j].coord_case))
+            else if(map[link->bombe.i - 1][link->bombe.j].type == LINK)
                 *victoire = link2->couleur;
 
-            else if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i - 1][link->bombe.j].coord_case))
+            else if(map[link->bombe.i - 1][link->bombe.j].type == LINK_ROUGE)
                 *victoire = link->couleur;
 
-            else if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i][link->bombe.j + 1].coord_case))
+            else if(map[link->bombe.i][link->bombe.j + 1].type == LINK)
                 *victoire = link2->couleur;
 
-            else if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i][link->bombe.j + 1].coord_case))
+            else if(map[link->bombe.i][link->bombe.j + 1].type == LINK_ROUGE)
                 *victoire = link->couleur;
 
-            else if(SDL_HasIntersection(&link->hitbox, &map[link->bombe.i][link->bombe.j - 1].coord_case))
+            else if(map[link->bombe.i][link->bombe.j - 1].type == LINK)
                 *victoire = link2->couleur;
 
-            else if(SDL_HasIntersection(&link2->hitbox, &map[link->bombe.i][link->bombe.j - 1].coord_case))
+            else if(map[link->bombe.i][link->bombe.j - 1].type == LINK_ROUGE)
                 *victoire = link->couleur;
         }
   
@@ -238,20 +238,17 @@ void detecte_map(Map map[][HAUTEUR], Link *link, Link *link2, const int directio
                     }
                 }
 
-                else if(test_hitbox.w * test_hitbox.h > 4200 && map[i][j].type != FUTURE_BOMBE)
+                else if(test_hitbox.w * test_hitbox.h > 4200)
                 {
                     link->i = i;
                     link->j = j;
-
-                    if(joueur == LINK)
-                        map[i][j].type = LINK;
-
-                    else if(joueur == LINK_ROUGE)
-                        map[i][j].type = LINK_ROUGE;
                 }
+
+                if(map[i][j].type != MUR_DESTRUCTIBLE && map[i][j].type != MUR_INDESTRUCTIBLE)
+                    map[i][j].type = link->couleur;
             }
 
-            else if(map[i][j].type == LINK || map[i][j].type == LINK_ROUGE)
+            else if(map[i][j].type == link->couleur)
                 map[i][j].type = VIDE;
 
             if(link->bombe.i == i && link->bombe.j == j)
@@ -262,7 +259,7 @@ void detecte_map(Map map[][HAUTEUR], Link *link, Link *link2, const int directio
                 else if(link->nb_bombe == 0)
                     map[i][j].type = VIDE;
             }
-
+            
             else if(map[i][j].type == BOMBE_MAP) 
                 map[i][j].type = VIDE;
         } 
