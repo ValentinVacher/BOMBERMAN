@@ -161,19 +161,19 @@ void deplacer_joueur(Link *link, const int direction)
         link->hitbox.y--;
     }
 
-    if(direction == BAS && (link->hitbox.y + link->hitbox.h) < HAUTEUR_WINDOW - MUR_HAUTEUR)
+    else if(direction == BAS && (link->hitbox.y + link->hitbox.h) < HAUTEUR_WINDOW - MUR_HAUTEUR)
     {
         link->forme.y++;
         link->hitbox.y++;
     }
 
-    if(direction == GAUCHE && link->hitbox.x > MUR_LARGEUR)
+    else if(direction == GAUCHE && link->hitbox.x > MUR_LARGEUR)
     {
         link->forme.x--;
         link->hitbox.x--;
     }
 
-    if(direction == DROITE && (link->hitbox.x + link->hitbox.w) < LARGEUR_WINDOW - MUR_LARGEUR)
+    else if(direction == DROITE && (link->hitbox.x + link->hitbox.w) < LARGEUR_WINDOW - MUR_LARGEUR)
     {
         link->forme.x++;
         link->hitbox.x++;

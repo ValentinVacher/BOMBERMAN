@@ -11,7 +11,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
     SDL_Event event;
     SDL_bool game_launched = SDL_TRUE, space = SDL_FALSE, rctrl = SDL_FALSE, exite_statue = SDL_FALSE;
     SDL_Texture *texture_arriere_plan = NULL, *texture_mur_destructible = NULL, *texture_bombe[3], *texture_victoire[2];
-    int debut = SDL_GetTicks(), music_changement = 0, i = 0, victoire = 0,  rejouer = 1;
+    int debut = SDL_GetTicks(), music_changement = 0, i = 0, victoire = 0,  rejouer = 1, direction = BAS;
     Mix_Music *music;
     Mix_Chunk *explosion;
     Link link, link_rouge;
@@ -208,6 +208,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
                     detecte_map(map, &link, &link_rouge, HAUT, LINK);
                     if(!in->key[SDL_SCANCODE_A] && !in->key[SDL_SCANCODE_D] && !in->key[SDL_SCANCODE_S])
                         link_animation(&link.animation);
+                    direction = HAUT;
                 }
 
                 if(in->key[SDL_SCANCODE_S])
@@ -216,6 +217,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
                     detecte_map(map, &link, &link_rouge, BAS, LINK);
                     if(!in->key[SDL_SCANCODE_A] && !in->key[SDL_SCANCODE_D] && !in->key[SDL_SCANCODE_W])
                         link_animation(&link.animation);
+                        direction = BAS;
                 }
 
                 if(in->key[SDL_SCANCODE_A])
@@ -224,6 +226,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
                     detecte_map(map, &link, &link_rouge, GAUCHE, LINK);
                     if(!in->key[SDL_SCANCODE_D])
                         link_animation(&link.animation);
+                    direction = GAUCHE;
                 }
 
                 if(in->key[SDL_SCANCODE_D])
@@ -232,6 +235,13 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
                     detecte_map(map, &link, &link_rouge, DROITE, LINK);
                     if(!in->key[SDL_SCANCODE_A])
                         link_animation(&link.animation);
+                        direction = DROITE;
+                }
+
+                else if(!in->key[SDL_SCANCODE_W] && !in->key[SDL_SCANCODE_S] && !in->key[SDL_SCANCODE_A] && !in->key[SDL_SCANCODE_D])
+                {
+                    link.animation = 0;
+                    link.direction_actuel = link.direction[direction][0];
                 }
 
                 if(in->key[SDL_SCANCODE_SPACE] && !space)
@@ -358,8 +368,6 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
     printf("PTHREAD_JOIN : THREAD[0]\n");
     pthread_join(thread[1], NULL);
     printf("PTHREAD_JOIN : THREAD[1]\n");
-    pthread_join(thread[2], NULL);
-    printf("PTHREAD_JOIN : THREAD[2]\n");
                 
     return exite_statue;
 }
