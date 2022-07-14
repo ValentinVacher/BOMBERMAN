@@ -86,9 +86,52 @@ SDL_bool create_link(Link *link, SDL_Renderer *renderer, int joueur)
     else if(joueur == LINK_ROUGE)  
     {
         link->direction[HAUT][0] = load_image("src/images/link_dos_rouge.png", renderer);
+        link->direction[HAUT][1] = load_image("src/images/animation_link_rouge/link_haut_1.png", renderer);
+        link->direction[HAUT][2] = load_image("src/images/animation_link_rouge/link_haut_2.png", renderer);
+        link->direction[HAUT][3] = load_image("src/images/animation_link_rouge/link_haut_3.png", renderer);
+        link->direction[HAUT][4] = load_image("src/images/animation_link_rouge/link_haut_4.png", renderer);
+        link->direction[HAUT][5] = load_image("src/images/animation_link_rouge/link_haut_5.png", renderer);
+        link->direction[HAUT][6] = load_image("src/images/animation_link_rouge/link_haut_6.png", renderer);
+        link->direction[HAUT][7] = load_image("src/images/animation_link_rouge/link_haut_7.png", renderer);
+        link->direction[HAUT][8] = load_image("src/images/animation_link_rouge/link_haut_8.png", renderer);
+        link->direction[HAUT][9] = load_image("src/images/animation_link_rouge/link_haut_9.png", renderer);
+        link->direction[HAUT][10] = load_image("src/images/animation_link_rouge/link_haut_10.png", renderer);
+
         link->direction[BAS][0] = load_image("src/images/link_face_rouge.png", renderer);
+        link->direction[BAS][1] = load_image("src/images/animation_link_rouge/link_bas_1.png", renderer);
+        link->direction[BAS][2] = load_image("src/images/animation_link_rouge/link_bas_2.png", renderer);
+        link->direction[BAS][3] = load_image("src/images/animation_link_rouge/link_bas_3.png", renderer);
+        link->direction[BAS][4] = load_image("src/images/animation_link_rouge/link_bas_4.png", renderer);
+        link->direction[BAS][5] = load_image("src/images/animation_link_rouge/link_bas_5.png", renderer);
+        link->direction[BAS][6] = load_image("src/images/animation_link_rouge/link_bas_6.png", renderer);
+        link->direction[BAS][7] = load_image("src/images/animation_link_rouge/link_bas_7.png", renderer);
+        link->direction[BAS][8] = load_image("src/images/animation_link_rouge/link_bas_8.png", renderer);
+        link->direction[BAS][9] = load_image("src/images/animation_link_rouge/link_bas_9.png", renderer);
+        link->direction[BAS][10] = load_image("src/images/animation_link_rouge/link_bas_10.png", renderer);
+
         link->direction[GAUCHE][0] = load_image("src/images/link_gauche_rouge.png", renderer);
+        link->direction[GAUCHE][1] = load_image("src/images/animation_link_rouge/link_gauche_1.png", renderer);
+        link->direction[GAUCHE][2] = load_image("src/images/animation_link_rouge/link_gauche_2.png", renderer);
+        link->direction[GAUCHE][3] = load_image("src/images/animation_link_rouge/link_gauche_3.png", renderer);
+        link->direction[GAUCHE][4] = load_image("src/images/animation_link_rouge/link_gauche_4.png", renderer);
+        link->direction[GAUCHE][5] = load_image("src/images/animation_link_rouge/link_gauche_5.png", renderer);
+        link->direction[GAUCHE][6] = load_image("src/images/animation_link_rouge/link_gauche_6.png", renderer);
+        link->direction[GAUCHE][7] = load_image("src/images/animation_link_rouge/link_gauche_7.png", renderer);
+        link->direction[GAUCHE][8] = load_image("src/images/animation_link_rouge/link_gauche_8.png", renderer);
+        link->direction[GAUCHE][9] = load_image("src/images/animation_link_rouge/link_gauche_9.png", renderer);
+        link->direction[GAUCHE][10] = load_image("src/images/animation_link_rouge/link_gauche_10.png", renderer);
+
         link->direction[DROITE][0] = load_image("src/images/link_droite_rouge.png", renderer); 
+        link->direction[DROITE][2] = load_image("src/images/animation_link_rouge/link_droit_2.png", renderer);
+        link->direction[DROITE][1] = load_image("src/images/animation_link_rouge/link_droit_1.png", renderer);
+        link->direction[DROITE][3] = load_image("src/images/animation_link_rouge/link_droit_3.png", renderer);
+        link->direction[DROITE][4] = load_image("src/images/animation_link_rouge/link_droit_4.png", renderer);
+        link->direction[DROITE][5] = load_image("src/images/animation_link_rouge/link_droit_5.png", renderer);
+        link->direction[DROITE][6] = load_image("src/images/animation_link_rouge/link_droit_6.png", renderer);
+        link->direction[DROITE][7] = load_image("src/images/animation_link_rouge/link_droit_7.png", renderer);
+        link->direction[DROITE][8] = load_image("src/images/animation_link_rouge/link_droit_8.png", renderer);
+        link->direction[DROITE][9] = load_image("src/images/animation_link_rouge/link_droit_9.png", renderer);
+        link->direction[DROITE][10] = load_image("src/images/animation_link_rouge/link_droit_10.png", renderer); 
 
         link->forme.x = 135 + 1650 - 90;
         link->forme.y = 15 + 1050 - 115; 

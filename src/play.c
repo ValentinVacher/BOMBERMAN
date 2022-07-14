@@ -11,7 +11,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
     SDL_Event event;
     SDL_bool game_launched = SDL_TRUE, space = SDL_FALSE, rctrl = SDL_FALSE, exite_statue = SDL_FALSE;
     SDL_Texture *texture_arriere_plan = NULL, *texture_mur_destructible = NULL, *texture_bombe[3], *texture_victoire[2];
-    int debut = SDL_GetTicks(), music_changement = 0, i = 0, victoire = 0,  rejouer = 1, direction = BAS;
+    int debut = SDL_GetTicks(), music_changement = 0, i = 0, victoire = 0,  rejouer = 1, direction = BAS, direction_rouge = BAS;
     Mix_Music *music;
     Mix_Chunk *explosion;
     Link link, link_rouge;
@@ -259,24 +259,42 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
                 {
                     deplacer_joueur(&link_rouge, HAUT);
                     detecte_map(map, &link_rouge, &link, HAUT, LINK_ROUGE);
+                    if(!in->key[SDL_SCANCODE_LEFT] && !in->key[SDL_SCANCODE_DOWN] && !in->key[SDL_SCANCODE_RIGHT])
+                        link_animation(&link_rouge.animation);
+                    direction_rouge = HAUT;
                 }
 
                 if(in->key[SDL_SCANCODE_DOWN])
                 {
                     deplacer_joueur(&link_rouge, BAS);
                     detecte_map(map, &link_rouge, &link, BAS, LINK_ROUGE);
+                    if(!in->key[SDL_SCANCODE_LEFT] && !in->key[SDL_SCANCODE_UP] && !in->key[SDL_SCANCODE_RIGHT])
+                        link_animation(&link_rouge.animation);
+                    direction_rouge = BAS;
                 }
 
                 if(in->key[SDL_SCANCODE_LEFT])
                 {
                     deplacer_joueur(&link_rouge, GAUCHE);
                     detecte_map(map, &link_rouge, &link, GAUCHE, LINK_ROUGE);
+                    if(!in->key[SDL_SCANCODE_RIGHT])
+                        link_animation(&link_rouge.animation);
+                    direction_rouge = GAUCHE;
                 }
 
                 if(in->key[SDL_SCANCODE_RIGHT])
                 {
                     deplacer_joueur(&link_rouge, DROITE);
                     detecte_map(map, &link_rouge, &link, DROITE, LINK_ROUGE);
+                    if(!in->key[SDL_SCANCODE_LEFT])
+                        link_animation(&link_rouge.animation);
+                    direction_rouge = DROITE;
+                }
+
+                else if(!in->key[SDL_SCANCODE_UP] && !in->key[SDL_SCANCODE_DOWN] && !in->key[SDL_SCANCODE_LEFT] && !in->key[SDL_SCANCODE_RIGHT])
+                {
+                    link_rouge.animation = 0;
+                    link_rouge.direction_actuel = link_rouge.direction[direction][0];
                 }
 
                 if(in->key[SDL_SCANCODE_RCTRL] && !rctrl)
