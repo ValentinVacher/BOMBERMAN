@@ -17,7 +17,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
     Link link, link_rouge;
     Map map[LARGEUR][HAUTEUR];
     unsigned int frame_limit = 0; 
-    pthread_t thread[3];
+    pthread_t thread[2];
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 
