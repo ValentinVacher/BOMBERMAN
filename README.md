@@ -5,7 +5,7 @@ Mon objectif est d'apprendre la programmation en C et à utiliser la bibliothèq
 <br/>
 ### CONTRÔLE :
 
-ECHAP : retour au menu
+ECHAP : menu pause
 <br/>
 ZQSD : déplacer link vert
 <br/>

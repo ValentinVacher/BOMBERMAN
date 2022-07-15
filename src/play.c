@@ -10,8 +10,8 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
 
     SDL_Event event;
     SDL_bool game_launched = SDL_TRUE, space = SDL_FALSE, rctrl = SDL_FALSE, exite_statue = SDL_FALSE;
-    SDL_Texture *texture_arriere_plan = NULL, *texture_mur_destructible = NULL, *texture_bombe[3], *texture_victoire[2];
-    int debut = SDL_GetTicks(), music_changement = 0, i = 0, victoire = 0,  rejouer = 1, direction = BAS, direction_rouge = BAS;
+    SDL_Texture *texture_arriere_plan = NULL, *texture_mur_destructible = NULL, *texture_bombe[3], *texture_victoire[2], *texture_menu_pause;
+    int debut = SDL_GetTicks(), music_changement = 0, i = 0, victoire = 0,  rejouer = 1, direction = BAS, direction_rouge = BAS, menu_pause = 0;
     Mix_Music *music;
     Mix_Chunk *explosion;
     Link link, link_rouge;
@@ -54,16 +54,20 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
         goto quit_play;
 
     texture_victoire[0] = load_image("src/images/victoire_link_vert.png", renderer);
-    if(texture_arriere_plan == NULL)
+    if(texture_victoire[0] == NULL)
         goto quit_play;
 
     texture_victoire[1] = load_image("src/images/victoire_link_rouge.png", renderer);
-    if(texture_arriere_plan == NULL)
+    if(texture_victoire[1] == NULL)
+        goto quit_play;
+
+    texture_menu_pause = load_image("src/images/menu_pause.png", renderer);
+    if(texture_menu_pause == NULL)
         goto quit_play;
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 
-    while(rejouer && !in->quit && !in->key[SDL_SCANCODE_ESCAPE])
+    while(rejouer && !in->quit)
     {
         victoire = 0;
         debut = SDL_GetTicks();
@@ -96,9 +100,28 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 
-        while (!in->quit && !in->key[SDL_SCANCODE_ESCAPE])
+        while (!in->quit)
         {
             frame_limit = SDL_GetTicks() + FPS;
+
+            if(in->key[SDL_SCANCODE_ESCAPE])   
+            { 
+                if(menu_pause == 0)
+                    menu_pause++;
+
+                else if(menu_pause == 2)
+                    menu_pause++;
+            }
+
+            else if(!in->key[SDL_SCANCODE_ESCAPE])
+            { 
+                if(menu_pause == 1)
+                    menu_pause++;
+
+                else if(menu_pause == 3)
+                    menu_pause = 0;
+            }
+
 
             if(change_music(debut, 15074, &music_changement, "src/musiques/musique_jeu.mp3", music, 0) == -1)
                 goto quit_play;
@@ -176,23 +199,26 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
                 goto quit_play;
             }
 
-            if(victoire == LINK) 
-            {   
+            if(menu_pause > 0 && menu_pause < 3)
+                if(SDL_RenderCopy(renderer, texture_menu_pause, NULL, NULL) != 0)
+                {
+                    SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
+                    goto quit_play;
+                }
+
+            if(victoire == LINK)   
                 if(SDL_RenderCopy(renderer, texture_victoire[0], NULL, NULL))
                 {
                     SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
                     goto quit_play;
                 }
-            }
 
-            if(victoire == LINK_ROUGE) 
-            {   
+            if(victoire == LINK_ROUGE)  
                 if(SDL_RenderCopy(renderer, texture_victoire[1], NULL, NULL))
                 {
                     SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
                     goto quit_play;
                 }
-            }
 
             SDL_RenderPresent(renderer);
 
@@ -200,7 +226,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
 
             update_event(in);
 
-            if(victoire == 0)
+            if(victoire == 0 && menu_pause == 0)
             {
                 if(in->key[SDL_SCANCODE_W])   
                 {
@@ -294,7 +320,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
                 else if(!in->key[SDL_SCANCODE_UP] && !in->key[SDL_SCANCODE_DOWN] && !in->key[SDL_SCANCODE_LEFT] && !in->key[SDL_SCANCODE_RIGHT])
                 {
                     link_rouge.animation = 0;
-                    link_rouge.direction_actuel = link_rouge.direction[direction][0];
+                    link_rouge.direction_actuel = link_rouge.direction[direction_rouge][0];
                 }
 
                 if(in->key[SDL_SCANCODE_RCTRL] && !rctrl)
@@ -311,9 +337,15 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
             {
                 if(in->y >= 491 && in->y <= 638)
                 {
-                    pthread_join(thread[0], NULL);
-                    pthread_join(thread[1], NULL);
-                    break;
+                    if(menu_pause == 0)
+                    {
+                        pthread_join(thread[0], NULL);
+                        pthread_join(thread[1], NULL);
+                        break;
+                    }
+
+                    else if(menu_pause > 0 && menu_pause < 3)
+                        menu_pause = 0;
                 }
 
                 else if(in->y >= 685 && in->y <= 833)
@@ -361,6 +393,19 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
         SDL_DestroyTexture(link_rouge.direction_actuel);
         printf("DESTROY_TEXTURE : LINK_ROUGE.DIRECTION_ACTUEL\n");
         free_link(link_rouge.direction);
+    }
+
+    for(i = 0 ; i < 2 ; i++)
+        if(texture_victoire[i] != NULL)
+        {
+            SDL_DestroyTexture(texture_victoire[i]);
+            printf("DESTROY_TEXTURE : TEXTURE_VICTOIRE[%d]\n", i);
+        }
+
+    if(texture_menu_pause != NULL)
+    {
+        SDL_DestroyTexture(texture_menu_pause);
+        printf("DESTROY_TEXTURE : TEXTURE_MENU_PAUSE\n");
     }
 
     for(i = 0 ; i < 3 ; i++)
