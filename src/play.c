@@ -11,9 +11,9 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
     SDL_Event event;
     SDL_bool game_launched = SDL_TRUE, space = SDL_FALSE, rctrl = SDL_FALSE, exite_statue = SDL_FALSE;
     SDL_Texture *texture_arriere_plan = NULL, *texture_mur_destructible = NULL, *texture_bombe[3], *texture_victoire[2], *texture_menu_pause;
-    int debut = SDL_GetTicks(), music_changement = 0, i = 0, victoire = 0,  rejouer = 1, direction = BAS, direction_rouge = BAS, menu_pause = 0;
+    int debut = SDL_GetTicks(), debut_pause = 0, music_changement = 0, i = 0, victoire = 0,  rejouer = 1, direction = BAS, direction_rouge = BAS, menu_pause = 0, music_pause_changement = 0, dif_debut = 0;
     Mix_Music *music;
-    Mix_Chunk *explosion;
+    Mix_Chunk *explosion, *intro_music_pause, *music_pause;
     Link link, link_rouge;
     Map map[LARGEUR][HAUTEUR];
     unsigned int frame_limit = 0; 
@@ -21,13 +21,29 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 
-    Mix_AllocateChannels(2);
+    Mix_AllocateChannels(3);
+
+    intro_music_pause = Mix_LoadWAV("src/musiques/intro_musique_menu_pause.mp3");
+    printf("LOAD_WAV : src/musiques/intro_musique_menu_pause.mp3\n");
+    if(intro_music_pause == NULL)
+    {
+        SDL_Log("ERREUR : LOAD_WAV > %s\n", Mix_GetError());
+        goto quit_play;
+    }
+
+    music_pause = Mix_LoadWAV("src/musiques/musique_menu_pause.mp3");
+    printf("LOAD_WAV : src/musiques/musique_menu_pause.mp3\n");
+    if(music_pause == NULL)
+    {
+        SDL_Log("ERREUR : LOAD_WAV > %s\n", Mix_GetError());
+        goto quit_play;
+    }
 
     explosion = Mix_LoadWAV("src/musiques/explosion.mp3");
     printf("LOAD_WAV : src/musiques/explosion.mp3\n");
     if(explosion == NULL)
     {
-        SDL_Log("ERREUR : LOAD_MUS > %s\n", Mix_GetError());
+        SDL_Log("ERREUR : LOAD_WAV > %s\n", Mix_GetError());
         goto quit_play;
     }
 
@@ -112,7 +128,14 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
                         menu_pause++;
 
                     else if(menu_pause == 2)
+                    {
                         menu_pause++;
+                        music_pause_changement = 0;
+                        Mix_HaltChannel(2);
+                        Mix_ResumeMusic();
+                        debut = SDL_GetTicks() - dif_debut;
+                        dif_debut = 0;
+                    }
                 }
 
                 else if(!in->key[SDL_SCANCODE_ESCAPE])
@@ -133,8 +156,6 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
             {
                 if(music_changement <= 1)
                 {
-                    debut =SDL_GetTicks();
-
                     music = Mix_LoadMUS("src/musiques/intro_musique_victoire.mp3");
                     if(music == NULL)
                     {
@@ -203,11 +224,32 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
             }
 
             if(menu_pause > 0 && menu_pause < 3)
+            {
+                if(dif_debut == 0)
+                    dif_debut = SDL_GetTicks() - debut;
+
+                debut = SDL_GetTicks();
+
                 if(SDL_RenderCopy(renderer, texture_menu_pause, NULL, NULL) != 0)
                 {
                     SDL_Log("ERREUR : RENDER_COPY > %s\n",SDL_GetError());
                     goto quit_play;
                 }
+
+                if(music_pause_changement == 0)
+                {
+                    Mix_PauseMusic();
+                    Mix_PlayChannel(2, intro_music_pause, 1);
+                    debut_pause = SDL_GetTicks(); 
+                    music_pause_changement++; 
+                }
+
+                if(SDL_GetTicks() - debut_pause >= 16599 && music_pause_changement == 1)
+                {
+                    Mix_PlayChannel(2, music_pause, -1);
+                    music_pause_changement++;
+                }
+            }
 
             if(victoire == LINK)   
                 if(SDL_RenderCopy(renderer, texture_victoire[0], NULL, NULL))
@@ -348,7 +390,14 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
                     }
 
                     else if(menu_pause > 0 && menu_pause < 3)
+                    {
                         menu_pause = 0;
+                        music_pause_changement = 0;
+                        Mix_HaltChannel(2);
+                        Mix_ResumeMusic();
+                        debut = SDL_GetTicks() - dif_debut;
+                        dif_debut = 0;
+                    }
                 }
 
                 else if(in->y >= 685 && in->y <= 833)
@@ -369,6 +418,18 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
     {
         Mix_FreeMusic(music);
         printf("FREE_MUSIC\n");
+    }
+
+    if(intro_music_pause != NULL)   
+    {
+        Mix_FreeChunk(intro_music_pause);
+        printf("FREE_CHUNK : INTRO_MUSIC_PAUSE\n");
+    }
+
+    if(music_pause != NULL)   
+    {
+        Mix_FreeChunk(music_pause);
+        printf("FREE_CHUNK : MUSIC_PAUSE\n");
     }
 
     if(explosion != NULL)
