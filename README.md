@@ -5,7 +5,7 @@ Mon objectif est d'apprendre la programmation en C et à utiliser la bibliothèq
 <br/>
 ### CONTRÔLE :
 
-ECHAP : menu pause
+ECHAP : menu pause (vous ne pouvez pas mettre le jeu en pause si une bombe et posé)
 <br/>
 ZQSD : déplacer link vert
 <br/>

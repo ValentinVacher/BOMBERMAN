@@ -104,22 +104,25 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
         {
             frame_limit = SDL_GetTicks() + FPS;
 
-            if(in->key[SDL_SCANCODE_ESCAPE])   
-            { 
-                if(menu_pause == 0)
-                    menu_pause++;
+            if(link.nb_bombe == 0 && link_rouge.nb_bombe == 0)
+            {
+                if(in->key[SDL_SCANCODE_ESCAPE])   
+                { 
+                    if(menu_pause == 0)
+                        menu_pause++;
 
-                else if(menu_pause == 2)
-                    menu_pause++;
-            }
+                    else if(menu_pause == 2)
+                        menu_pause++;
+                }
 
-            else if(!in->key[SDL_SCANCODE_ESCAPE])
-            { 
-                if(menu_pause == 1)
-                    menu_pause++;
+                else if(!in->key[SDL_SCANCODE_ESCAPE])
+                { 
+                    if(menu_pause == 1)
+                        menu_pause++;
 
-                else if(menu_pause == 3)
-                    menu_pause = 0;
+                    else if(menu_pause == 3)
+                        menu_pause = 0;
+                }
             }
 
 
