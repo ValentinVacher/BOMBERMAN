@@ -128,14 +128,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
                         menu_pause++;
 
                     else if(menu_pause == 2)
-                    {
                         menu_pause++;
-                        music_pause_changement = 0;
-                        Mix_HaltChannel(2);
-                        Mix_ResumeMusic();
-                        debut = SDL_GetTicks() - dif_debut;
-                        dif_debut = 0;
-                    }
                 }
 
                 else if(!in->key[SDL_SCANCODE_ESCAPE])
@@ -144,7 +137,14 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
                         menu_pause++;
 
                     else if(menu_pause == 3)
+                    {
                         menu_pause = 0;
+                        music_pause_changement = 0;
+                        Mix_HaltChannel(2);
+                        Mix_ResumeMusic();
+                        debut = SDL_GetTicks() - dif_debut;
+                        dif_debut = 0;
+                    }
                 }
             }
 
@@ -391,12 +391,7 @@ SDL_bool play(SDL_Renderer *renderer, Input *in)
 
                     else if(menu_pause > 0 && menu_pause < 3)
                     {
-                        menu_pause = 0;
-                        music_pause_changement = 0;
-                        Mix_HaltChannel(2);
-                        Mix_ResumeMusic();
-                        debut = SDL_GetTicks() - dif_debut;
-                        dif_debut = 0;
+                        menu_pause++;
                     }
                 }
 
